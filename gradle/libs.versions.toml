@@ -13,9 +13,9 @@ activity = "1.9.2"
 constraintlayout = "2.1.4"
 retrofit = "2.9.0"
 navigationUiKtx = "2.8.1"
-lifecycleLivedataKtx = "2.6.1"
-lifecycleViewmodelKtx = "2.6.1"
-navigationFragmentKtx = "2.6.0"
+lifecycleLivedataKtx = "2.8.6"
+lifecycleViewmodelKtx = "2.8.6"
+navigationFragmentKtx = "2.8.1"
 navigationFragment = "2.8.1"
 
 [libraries]
