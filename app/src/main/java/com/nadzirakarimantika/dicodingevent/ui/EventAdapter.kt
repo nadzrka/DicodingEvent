@@ -12,7 +12,6 @@ class EventAdapter(private val events: List<ListEventsItem>) : RecyclerView.Adap
     inner class EventViewHolder(private val binding: ItemRowEventBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(event: ListEventsItem) {
             binding.tvItemName.text = event.name
-            binding.tvItemDescription.text = event.description
 
             Glide.with(itemView.context)
                 .load(event.mediaCover)
