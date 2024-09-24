@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun findEvent(){
         showLoading(true)
-        val client = ApiConfig.getApiService().getEvent()
+        val client = ApiConfig.getApiService().getUpcomingEvent()
         client.enqueue(object : Callback<UpcomingResponse> {
             override fun onResponse(
                 call: Call<UpcomingResponse>,
