@@ -2,4 +2,10 @@
     <string name="app_name">DicodingEvent</string>
     <string name="event_name">event_name</string>
     <string name="description">description</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="event_upcoming">Upcoming</string>
+    <string name="event_finished">Finished\n</string>
 </resources>
