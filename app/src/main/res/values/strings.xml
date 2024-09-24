@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DicodingEvent</string>
+    <string name="event_name">event_name</string>
+    <string name="description">description</string>
+</resources>
