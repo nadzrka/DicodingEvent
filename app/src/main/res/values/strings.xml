@@ -10,4 +10,6 @@
     <string name="event_finished">Finished</string>
     <string name="title_upcoming">Upcoming Events</string>
     <string name="title_finished">Finished Events</string>
+    <string name="event_quota">event quota</string>
+    <string name="title_detail">detail activity</string>
 </resources>

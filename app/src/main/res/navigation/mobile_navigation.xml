@@ -22,11 +22,25 @@
         android:id="@+id/navigation_upcoming"
         android:name="com.nadzirakarimantika.dicodingevent.ui.upcoming.UpcomingFragment"
         android:label="@string/title_upcoming"
-        tools:layout="@layout/fragment_upcoming" />
+        tools:layout="@layout/fragment_upcoming" >
+        <action
+            android:id="@+id/action_navigation_upcoming_to_navigation_detail"
+            app:destination="@id/navigation_detail" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_finished"
         android:name="com.nadzirakarimantika.dicodingevent.ui.finished.FinishedFragment"
         android:label="@string/title_finished"
+        tools:layout="@layout/fragment_finished" >
+        <action
+            android:id="@+id/action_navigation_finished_to_navigation_detail"
+            app:destination="@id/navigation_detail" />
+    </fragment>
+
+    <activity
+        android:id="@+id/navigation_detail"
+        android:name="com.nadzirakarimantika.dicodingevent.ui.DetailActivity"
+        android:label="@string/title_detail"
         tools:layout="@layout/fragment_finished" />
 </navigation>

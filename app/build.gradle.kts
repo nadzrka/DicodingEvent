@@ -45,6 +45,9 @@ android {
 
 dependencies {
 
+
+    implementation(libs.material)
+    implementation (libs.material3)
     implementation(libs.androidx.lifecycle.viewmodel.ktx.v262)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.glide)
@@ -53,7 +56,6 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.ui.ktx)

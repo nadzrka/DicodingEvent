@@ -7,7 +7,10 @@ import com.bumptech.glide.Glide
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.ItemRowEventBinding
 
-class EventAdapter(private val events: List<ListEventsItem>) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
+class EventAdapter(
+    private val events: List<ListEventsItem>,
+    private val onItemClick: (ListEventsItem) -> Unit
+) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
     inner class EventViewHolder(private val binding: ItemRowEventBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(event: ListEventsItem) {
@@ -16,6 +19,11 @@ class EventAdapter(private val events: List<ListEventsItem>) : RecyclerView.Adap
             Glide.with(itemView.context)
                 .load(event.mediaCover)
                 .into(binding.imgItemPhoto)
+
+            // Set the click listener
+            itemView.setOnClickListener {
+                onItemClick(event) // Trigger the lambda with the clicked event
+            }
         }
     }
 
@@ -28,7 +36,5 @@ class EventAdapter(private val events: List<ListEventsItem>) : RecyclerView.Adap
         holder.bind(events[position])
     }
 
-    override fun getItemCount(): Int {
-        return events.size
-    }
+    override fun getItemCount(): Int = events.size
 }
