@@ -1,8 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.DicodingEvent" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.DicodingEvent" parent="Theme.Material3.DayNight">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/green</item>
+        <!-- Customize the text appearance of the title -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <!-- Customize subtitle text -->
+        <item name="android:textColorSecondary">@color/white</item>
+        <!-- Customize popup menu items -->
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="CustomToolbarTheme" parent="Base.Theme.DicodingEvent">
     </style>
 
     <style name="Theme.DicodingEvent" parent="Base.Theme.DicodingEvent" />

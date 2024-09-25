@@ -1,6 +1,7 @@
 package com.nadzirakarimantika.dicodingevent
 
 import android.os.Bundle
+import android.widget.Toolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -26,7 +27,7 @@ class HomeActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+                R.id.navigation_home, R.id.navigation_upcoming, R.id.navigation_finished
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

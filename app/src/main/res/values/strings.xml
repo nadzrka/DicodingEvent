@@ -8,4 +8,6 @@
     <string name="title_notifications">Notifications</string>
     <string name="event_upcoming">Upcoming</string>
     <string name="event_finished">Finished\n</string>
+    <string name="title_upcoming">Upcoming</string>
+    <string name="title_finished">Finished</string>
 </resources>
