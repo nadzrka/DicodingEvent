@@ -1,25 +1,15 @@
-package com.nadzirakarimantika.dicodingevent.ui.Finished
+package com.nadzirakarimantika.dicodingevent.ui.finished
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nadzirakarimantika.dicodingevent.data.response.EventResponse
-import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
-import com.nadzirakarimantika.dicodingevent.data.retrofit.ApiConfig
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentFinishedBinding
 import com.nadzirakarimantika.dicodingevent.ui.EventAdapter
-import com.nadzirakarimantika.dicodingevent.ui.Upcoming.UpcomingViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class FinishedFragment : Fragment() {
 
@@ -54,7 +44,6 @@ class FinishedFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
             }
         })
-
 
         finishedViewModel.findEvent()
     }

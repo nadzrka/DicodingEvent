@@ -1,20 +1,17 @@
-package com.nadzirakarimantika.dicodingevent.ui.Finished
+package com.nadzirakarimantika.dicodingevent.ui.upcoming
 
-import android.content.ContentValues.TAG
 import android.util.Log
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nadzirakarimantika.dicodingevent.data.response.EventResponse
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.data.retrofit.ApiConfig
-import com.nadzirakarimantika.dicodingevent.ui.EventAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FinishedViewModel : ViewModel() {
+class UpcomingViewModel : ViewModel() {
 
     private val _listEvents = MutableLiveData<List<ListEventsItem>>()
     val listEvents: LiveData<List<ListEventsItem>> get() = _listEvents
@@ -26,7 +23,7 @@ class FinishedViewModel : ViewModel() {
 
     fun findEvent() {
         _isLoading.value = true
-        val client = ApiConfig.getApiService().getFinishedEvent()
+        val client = ApiConfig.getApiService().getUpcomingEvent()
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(
                 call: Call<EventResponse>,
@@ -49,4 +46,5 @@ class FinishedViewModel : ViewModel() {
             }
         })
     }
+
 }
