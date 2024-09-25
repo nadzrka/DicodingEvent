@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nadzirakarimantika.dicodingevent.data.response.EventResponse
@@ -23,64 +25,38 @@ class FinishedFragment : Fragment() {
 
     private var _binding: FragmentFinishedBinding? = null
     private val binding get() = _binding!!
-
-    private fun findEvent(){
-        showLoading(true)
-        val client = ApiConfig.getApiService().getFinishedEvent()
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(
-                call: Call<EventResponse>,
-                response: Response<EventResponse>
-            ) {
-                showLoading(false)
-                if (response.isSuccessful){
-                    val responseBody = response.body()
-                    if (responseBody != null) {
-                        setEventData(responseBody.listEvents?.filterNotNull() ?: emptyList())
-                    }
-                } else {
-                    Log.e(TAG, "onFailure: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                showLoading(false)
-                Log.e(TAG, "onFailure: ${t.message}")
-            }
-        })
-    }
-
-    private fun setEventData(listEvents: List<ListEventsItem>) {
-        val adapter = EventAdapter(listEvents)
-        binding.rvEvent.adapter = adapter
-
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        if (isLoading) {
-            binding.progressBar.visibility = View.VISIBLE
-        } else {
-            binding.progressBar.visibility = View.VISIBLE
-        }
-    }
+    private val finishedViewModel: FinishedViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val upcomingViewModel =
-            ViewModelProvider(this).get(UpcomingViewModel::class.java)
-
         _binding = FragmentFinishedBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+       return binding.root
+    }
 
-        val layoutManager = LinearLayoutManager(requireActivity())
-        binding.rvEvent.layoutManager = layoutManager
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        findEvent()
+        binding.rvEvent.layoutManager = LinearLayoutManager(requireContext())
 
-        return root
+        finishedViewModel.listEvents.observe(viewLifecycleOwner, Observer { listEvents ->
+            val adapter = EventAdapter(listEvents)
+            binding.rvEvent.adapter = adapter
+        })
+
+        // Observe loading state to show/hide progress bar
+        finishedViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            if (isLoading) {
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
+        })
+
+
+        finishedViewModel.findEvent()
     }
 
     override fun onDestroyView() {

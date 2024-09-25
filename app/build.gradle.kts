@@ -45,6 +45,8 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.lifecycle.viewmodel.ktx.v262)
+    implementation(libs.androidx.activity.ktx)
     implementation(libs.glide)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
