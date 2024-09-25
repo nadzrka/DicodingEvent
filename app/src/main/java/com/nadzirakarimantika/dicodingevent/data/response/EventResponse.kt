@@ -2,7 +2,7 @@ package com.nadzirakarimantika.dicodingevent.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class UpcomingResponse(
+data class EventResponse(
 
 	@field:SerializedName("listEvents")
 	val listEvents: List<ListEventsItem?>? = null,

@@ -6,11 +6,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nadzirakarimantika.dicodingevent.R
+import com.nadzirakarimantika.dicodingevent.data.response.EventResponse
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
-import com.nadzirakarimantika.dicodingevent.data.response.UpcomingResponse
 import com.nadzirakarimantika.dicodingevent.data.retrofit.ApiConfig
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentUpcomingBinding
 import com.nadzirakarimantika.dicodingevent.ui.EventAdapter
@@ -23,22 +25,13 @@ class UpcomingFragment : Fragment() {
     private var _binding: FragmentUpcomingBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-
-
-
-    }
-
     private fun findEvent(){
         showLoading(true)
         val client = ApiConfig.getApiService().getUpcomingEvent()
-        client.enqueue(object : Callback<UpcomingResponse> {
+        client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(
-                call: Call<UpcomingResponse>,
-                response: Response<UpcomingResponse>
+                call: Call<EventResponse>,
+                response: Response<EventResponse>
             ) {
                 showLoading(false)
                 if (response.isSuccessful){
@@ -51,7 +44,7 @@ class UpcomingFragment : Fragment() {
                 }
             }
 
-            override fun onFailure(call: Call<UpcomingResponse>, t: Throwable) {
+            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 showLoading(false)
                 Log.e(TAG, "onFailure: ${t.message}")
             }

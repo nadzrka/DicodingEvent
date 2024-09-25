@@ -1,37 +1,85 @@
 package com.nadzirakarimantika.dicodingevent.ui.Finished
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.nadzirakarimantika.dicodingevent.data.response.EventResponse
+import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
+import com.nadzirakarimantika.dicodingevent.data.retrofit.ApiConfig
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentFinishedBinding
+import com.nadzirakarimantika.dicodingevent.ui.EventAdapter
+import com.nadzirakarimantika.dicodingevent.ui.Upcoming.UpcomingViewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class FinishedFragment : Fragment() {
 
     private var _binding: FragmentFinishedBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+
+    private fun findEvent(){
+        showLoading(true)
+        val client = ApiConfig.getApiService().getFinishedEvent()
+        client.enqueue(object : Callback<EventResponse> {
+            override fun onResponse(
+                call: Call<EventResponse>,
+                response: Response<EventResponse>
+            ) {
+                showLoading(false)
+                if (response.isSuccessful){
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        setEventData(responseBody.listEvents?.filterNotNull() ?: emptyList())
+                    }
+                } else {
+                    Log.e(TAG, "onFailure: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
+                showLoading(false)
+                Log.e(TAG, "onFailure: ${t.message}")
+            }
+        })
+    }
+
+    private fun setEventData(listEvents: List<ListEventsItem>) {
+        val adapter = EventAdapter(listEvents)
+        binding.rvEvent.adapter = adapter
+
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.VISIBLE
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(FinishedViewModel::class.java)
+        val upcomingViewModel =
+            ViewModelProvider(this).get(UpcomingViewModel::class.java)
 
         _binding = FragmentFinishedBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textNotifications
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        val layoutManager = LinearLayoutManager(requireActivity())
+        binding.rvEvent.layoutManager = layoutManager
+
+        findEvent()
+
         return root
     }
 
