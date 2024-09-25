@@ -31,8 +31,8 @@ class DetailViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-                    if (responseBody != null && responseBody.event != null) {
-                        _detailEvent.value = responseBody.event
+                    if (responseBody?.event != null) {
+                        _detailEvent.value = responseBody.event!!
                     } else {
                         Log.e(TAG, "No event found in the response")
                     }
