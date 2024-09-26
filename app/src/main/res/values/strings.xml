@@ -12,4 +12,12 @@
     <string name="title_finished">Finished Events</string>
     <string name="event_quota">event quota</string>
     <string name="title_detail">detail activity</string>
+    <string name="event_summary">event summary</string>
+    <string name="event_link">event link</string>
+    <string name="begin_time">begin time</string>
+    <string name="end_time">end time</string>
+    <string name="event_imagelogo">image logo</string>
+    <string name="event_category">category</string>
+    <string name="event_owner">event owner</string>
+    <string name="event_registrants">event registranst</string>
 </resources>

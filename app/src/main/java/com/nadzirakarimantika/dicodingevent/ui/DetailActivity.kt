@@ -1,9 +1,13 @@
 package com.nadzirakarimantika.dicodingevent.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
+import androidx.core.text.HtmlCompat
 import com.nadzirakarimantika.dicodingevent.databinding.ActivityDetailBinding
 
 class DetailActivity : AppCompatActivity() {
@@ -20,33 +24,65 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Get the event ID from the Intent
-        val eventId = intent.getStringExtra(EXTRA_EVENT_ID)
-
-        // Set the title for the ActionBar
         supportActionBar?.title = "Detail Event"
 
-        // Observe the event details and update UI
-        detailViewModel.detailEvent.observe(this) { event ->
-            // Make sure event is not null before accessing its properties
-            if (event != null) {
-                binding.eventName.text = event.name
-                binding.eventDescription.text = event.description
-            }
-        }
+        val eventId = intent.getStringExtra(EXTRA_EVENT_ID)
 
-        // Observe the loading state and show/hide the progress bar
-        detailViewModel.isLoading.observe(this) { isLoading ->
-            if (isLoading) {
-                binding.progressBar.visibility = View.VISIBLE
-            } else {
-                binding.progressBar.visibility = View.GONE
-            }
-        }
-
-        // Fetch the event details
         if (eventId != null) {
-            detailViewModel.findEvent(eventId)  // Pass eventId to the ViewModel
+            detailViewModel.findEvent(eventId)
+        } else {
+            Log.e("DetailActivity", "Event ID is null")
         }
+
+        // Observe the event details and update UI
+        detailViewModel.Event.observe(this, Observer { event ->
+            // Update the UI with event details if event is not null
+            if (event != null) {
+                binding.eventName.text =  HtmlCompat.fromHtml(
+                    event.name.toString(),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                binding.eventDescription.text = HtmlCompat.fromHtml(
+                    event.description.toString(),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                binding.eventCategory.text =  HtmlCompat.fromHtml(
+                    event.category.toString(),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                binding.eventOwner.text =  HtmlCompat.fromHtml(
+                    event.ownerName.toString(),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                binding.eventRegistrants.text =  HtmlCompat.fromHtml(
+                    event.registrants.toString(),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                binding.eventLink.text =  HtmlCompat.fromHtml(
+                    event.link.toString(),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                binding.eventCity.text =  HtmlCompat.fromHtml(
+                    event.cityName.toString(),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                binding.eventSummary.text =  HtmlCompat.fromHtml(
+                    event.summary.toString(),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                // Load image using Glide
+                Glide.with(this)
+                    .load(event.mediaCover)
+                    .into(binding.imageView)
+            } else {
+                Log.e("DetailActivity", "Event data is null")
+            }
+        })
+
+        // Observe the loading state and show/hide progress bar
+        detailViewModel.isLoading.observe(this) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
     }
 }

@@ -13,16 +13,16 @@ import retrofit2.Response
 
 class DetailViewModel : ViewModel() {
     private val _detailEvent = MutableLiveData<Event>()
-    val detailEvent: LiveData<Event> get() = _detailEvent
+    val Event: LiveData<Event> get() = _detailEvent
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     private val TAG = "DetailViewModel"
 
-    fun findEvent(eventId: String) {  // Accept eventId as a parameter
+    fun findEvent(eventId: String) {
         _isLoading.value = true
-        val client = ApiConfig.getApiService().getDetailEvent(eventId)  // Use eventId in the API call
+        val client = ApiConfig.getApiService().getDetailEvent(eventId)
         client.enqueue(object : Callback<DetailResponse> {
             override fun onResponse(
                 call: Call<DetailResponse>,

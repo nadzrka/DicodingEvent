@@ -10,10 +10,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nadzirakarimantika.dicodingevent.data.response.DetailResponse
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
+import com.nadzirakarimantika.dicodingevent.data.retrofit.ApiService
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentUpcomingBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
 import com.nadzirakarimantika.dicodingevent.ui.EventAdapter
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class UpcomingFragment : Fragment() {
@@ -59,7 +64,7 @@ class UpcomingFragment : Fragment() {
     private fun navigateToDetailEvent(event: ListEventsItem) {
         // Start DetailActivity with event.id as an extra
         val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-            putExtra(DetailActivity.EXTRA_EVENT_ID, event.id) // Pass the event ID
+            putExtra(DetailActivity.EXTRA_EVENT_ID, event.id.toString()) // Pass the event ID
         }
         startActivity(intent)
     }
