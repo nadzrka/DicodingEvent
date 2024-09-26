@@ -92,7 +92,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        onBackPressedDispatcher.onBackPressed()  // Use the dispatcher instead of the deprecated method
         return true
     }
 
