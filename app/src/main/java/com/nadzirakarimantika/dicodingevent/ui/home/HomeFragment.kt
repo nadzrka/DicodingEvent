@@ -1,21 +1,27 @@
 package com.nadzirakarimantika.dicodingevent.ui.home
 
+import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.search.SearchView
 import com.google.android.material.search.SearchBar
+import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentHomeBinding
+import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
+import com.nadzirakarimantika.dicodingevent.ui.finished.FinishedViewModel
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private val homeViewModel:HomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,12 +54,37 @@ class HomeFragment : Fragment() {
             true
         }
 
-        // Set up a listener for closing the SearchView
         searchView.addTransitionListener { _, _, newState ->
             if (newState == SearchView.TransitionState.HIDDEN) {
                 searchView.hide() // Hide the SearchView when closed
             }
         }
+
+        homeViewModel.listEvents.observe(viewLifecycleOwner, Observer { listEvents ->
+            val adapter = CarouselAdapter(listEvents) { event ->
+                navigateToDetailEvent(event)
+            }
+            binding.viewPager.adapter = adapter
+        })
+
+        // Observe loading state to show/hide progress bar
+        homeViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            if (isLoading) {
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
+        })
+
+        homeViewModel.findEvent()
+    }
+
+    private fun navigateToDetailEvent(event: ListEventsItem) {
+        // Start DetailActivity with event.id as an extra
+        val intent = Intent(requireContext(), DetailActivity::class.java).apply {
+            putExtra(DetailActivity.EXTRA_EVENT_ID, event.id.toString()) // Pass the event ID
+        }
+        startActivity(intent)
     }
 
     private fun performSearch(query: String) {
