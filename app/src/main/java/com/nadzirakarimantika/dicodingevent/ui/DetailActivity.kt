@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import androidx.core.text.HtmlCompat
+import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.databinding.ActivityDetailBinding
 
 class DetailActivity : AppCompatActivity() {
@@ -21,10 +22,14 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)  // Show the back button
+            setHomeAsUpIndicator(getDrawable(R.drawable.arrow_back_24dp_e8eaed_fill0_wght400_grad0_opsz24)) // Set custom back button with the desired color
+            title = "Detail Event"
+        }
+
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        supportActionBar?.title = "Detail Event"
 
         val eventId = intent.getStringExtra(EXTRA_EVENT_ID)
 
@@ -85,4 +90,10 @@ class DetailActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
 }

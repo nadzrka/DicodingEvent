@@ -57,7 +57,7 @@ class FinishedFragment : Fragment() {
     private fun navigateToDetailEvent(event: ListEventsItem) {
         // Start DetailActivity with event.id as an extra
         val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-            putExtra(DetailActivity.EXTRA_EVENT_ID, event.id) // Pass the event ID
+            putExtra(DetailActivity.EXTRA_EVENT_ID, event.id.toString()) // Pass the event ID
         }
         startActivity(intent)
     }

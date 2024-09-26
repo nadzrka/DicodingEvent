@@ -8,13 +8,15 @@
 
     <item
         android:id="@+id/navigation_upcoming"
-        android:icon="@drawable/baseline_calendar_month_24"
-        android:title="@string/event_upcoming" />
+        android:icon="@drawable/event_upcoming_24dp_e8eaed_fill0_wght400_grad0_opsz24"
+        android:title="@string/event_upcoming"
+        android:iconTint="@color/black"/>
 
     <item
         android:id="@+id/navigation_finished"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/event_finished" />
+        android:icon="@drawable/event_available_24dp_e8eaed_fill0_wght400_grad0_opsz24"
+        android:title="@string/event_finished"
+        android:iconTint="@color/black"/>
 
 
 </menu>
