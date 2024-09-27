@@ -21,4 +21,8 @@
     <string name="event_owner">event owner</string>
     <string name="event_registrants">event registranst</string>
     <string name="finished_events">Finished Events</string>
+    <string name="event_description">event description</string>
+    <string name="search">search</string>
+    <string name="lorem">lorem</string>
+    <string name="searchHint">search</string>
 </resources>

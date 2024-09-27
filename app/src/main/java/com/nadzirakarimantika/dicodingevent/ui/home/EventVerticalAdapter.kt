@@ -2,6 +2,7 @@ package com.nadzirakarimantika.dicodingevent.ui.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
@@ -16,6 +17,10 @@ class EventVerticalAdapter(
 
         fun bind(event: ListEventsItem) {
 
+            binding.tvItemName.text =  HtmlCompat.fromHtml(
+                event.name.toString(),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
             Glide.with(itemView.context)
                 .load(event.imageLogo)
                 .into(binding.imgItemPhoto)
