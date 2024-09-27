@@ -15,19 +15,18 @@ import com.google.android.material.search.SearchBar
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentHomeBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
-import com.nadzirakarimantika.dicodingevent.ui.finished.FinishedViewModel
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val homeViewModel:HomeViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -35,18 +34,15 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Get references to SearchBar and SearchView
         val searchBar: SearchBar = binding.searchBar
         val searchView: SearchView = binding.searchView
 
-        // Handle when SearchBar is clicked to open SearchView
         searchBar.setOnMenuItemClickListener {
-            searchView.show() // Show the SearchView
+            searchView.show()
             true
         }
 
-        // Set up a listener for when the search query is submitted
-        searchView.editText.setOnEditorActionListener { v, actionId, event ->
+        searchView.editText.setOnEditorActionListener { _, _, _ ->
             val query = searchView.text.toString()
             if (query.isNotBlank()) {
                 performSearch(query)
@@ -56,41 +52,53 @@ class HomeFragment : Fragment() {
 
         searchView.addTransitionListener { _, _, newState ->
             if (newState == SearchView.TransitionState.HIDDEN) {
-                searchView.hide() // Hide the SearchView when closed
+                searchView.hide()
             }
         }
 
-        homeViewModel.listEvents.observe(viewLifecycleOwner, Observer { listEvents ->
-            val adapter = CarouselAdapter(listEvents) { event ->
+        // Set layout managers
+        binding.rvEvent.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.rvUpcoming.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        // Observe list of events
+        homeViewModel.listFinishedEvents.observe(viewLifecycleOwner, Observer { listEvents ->
+            // Create separate adapter for horizontal RecyclerView
+            val eventVerticalAdapter = EventVerticalAdapter(listEvents) { event ->
                 navigateToDetailEvent(event)
             }
-            binding.viewPager.adapter = adapter
+            binding.rvEvent.adapter = eventVerticalAdapter
+        })
+
+        // Observe upcoming events
+        homeViewModel.listUpcomingEvents.observe(viewLifecycleOwner, Observer { upcomingEvents ->
+            // Create separate adapter for vertical RecyclerView
+            val eventHorizontalAdapter = EventHorizontalAdapter(upcomingEvents) { event ->
+                navigateToDetailEvent(event)
+            }
+            binding.rvUpcoming.adapter = eventHorizontalAdapter
         })
 
         // Observe loading state to show/hide progress bar
         homeViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            if (isLoading) {
-                binding.progressBar.visibility = View.VISIBLE
-            } else {
-                binding.progressBar.visibility = View.GONE
-            }
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
 
-        homeViewModel.findEvent()
+        // Trigger the view model to fetch the events
+        homeViewModel.findFinishedEvent()
+        homeViewModel.findUpcomingEvent()
     }
 
     private fun navigateToDetailEvent(event: ListEventsItem) {
-        // Start DetailActivity with event.id as an extra
         val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-            putExtra(DetailActivity.EXTRA_EVENT_ID, event.id.toString()) // Pass the event ID
+            putExtra(DetailActivity.EXTRA_EVENT_ID, event.id.toString())
         }
         startActivity(intent)
     }
 
     private fun performSearch(query: String) {
-        // Perform the search action with the query text
         Toast.makeText(requireContext(), "Searching for: $query", Toast.LENGTH_SHORT).show()
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

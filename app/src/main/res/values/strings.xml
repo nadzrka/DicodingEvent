@@ -20,4 +20,5 @@
     <string name="event_category">category</string>
     <string name="event_owner">event owner</string>
     <string name="event_registrants">event registranst</string>
+    <string name="finished_events">Finished Events</string>
 </resources>

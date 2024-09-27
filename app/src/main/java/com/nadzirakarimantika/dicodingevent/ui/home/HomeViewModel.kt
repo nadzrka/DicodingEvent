@@ -13,15 +13,19 @@ import retrofit2.Response
 
 class HomeViewModel : ViewModel() {
 
-    private val _listEvents = MutableLiveData<List<ListEventsItem>>()
-    val listEvents: LiveData<List<ListEventsItem>> get() = _listEvents
+    private val _listFinishedEvents = MutableLiveData<List<ListEventsItem>>()
+    val listFinishedEvents: LiveData<List<ListEventsItem>> get() = _listFinishedEvents
+
+    private val _listUpcomingEvents = MutableLiveData<List<ListEventsItem>>()
+    val listUpcomingEvents: LiveData<List<ListEventsItem>> get() = _listUpcomingEvents
+
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     private val TAG = "FinishedViewModel"
 
-    fun findEvent() {
+    fun findFinishedEvent() {
         _isLoading.value = true
         val client = ApiConfig.getApiService().getFinishedEvent()
         client.enqueue(object : Callback<EventResponse> {
@@ -33,7 +37,33 @@ class HomeViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
-                        _listEvents.value = responseBody.listEvents?.filterNotNull() ?: emptyList()
+                        _listFinishedEvents.value = responseBody.listEvents?.filterNotNull() ?: emptyList()
+                    }
+                } else {
+                    Log.e(TAG, "onFailure: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
+                _isLoading.value = false
+                Log.e(TAG, "onFailure: ${t.message}")
+            }
+        })
+    }
+
+    fun findUpcomingEvent() {
+        _isLoading.value = true
+        val client = ApiConfig.getApiService().getUpcomingEvent()
+        client.enqueue(object : Callback<EventResponse> {
+            override fun onResponse(
+                call: Call<EventResponse>,
+                response: Response<EventResponse>
+            ) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        _listUpcomingEvents.value = responseBody.listEvents?.filterNotNull() ?: emptyList()
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")

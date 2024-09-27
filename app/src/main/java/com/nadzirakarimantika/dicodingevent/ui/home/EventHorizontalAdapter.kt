@@ -5,28 +5,29 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
-import com.nadzirakarimantika.dicodingevent.databinding.ItemCarouselEventBinding
+import com.nadzirakarimantika.dicodingevent.databinding.ItemEventHorizontalBinding
 
-class CarouselAdapter(
+class EventHorizontalAdapter(
     private val events: List<ListEventsItem>,
     private val onItemClick: (ListEventsItem) -> Unit
-) : RecyclerView.Adapter<CarouselAdapter.EventViewHolder>() {
+) : RecyclerView.Adapter<EventHorizontalAdapter.EventViewHolder>() {
 
-    inner class EventViewHolder(private val binding: ItemCarouselEventBinding, val onItemClick: (ListEventsItem) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+    inner class EventViewHolder(private val binding: ItemEventHorizontalBinding, val onItemClick: (ListEventsItem) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(event: ListEventsItem) {
-            binding.tvItemName.text = event.name
 
-            Glide.with(binding.root.context)
+            Glide.with(itemView.context)
                 .load(event.imageLogo)
                 .into(binding.eventPhoto)
 
-            binding.root.setOnClickListener { onItemClick(event) }
+            itemView.setOnClickListener {
+                onItemClick(event)
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-        val binding = ItemCarouselEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemEventHorizontalBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return EventViewHolder(binding, onItemClick)
     }
 
@@ -35,5 +36,6 @@ class CarouselAdapter(
         holder.bind(event)
     }
 
-    override fun getItemCount(): Int = events.size
+    override fun getItemCount(): Int = events.take(5).size
+
 }
