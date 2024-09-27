@@ -2,9 +2,11 @@ package com.nadzirakarimantika.dicodingevent.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.search.SearchView
 import com.google.android.material.search.SearchBar
+import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentHomeBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
@@ -28,7 +31,38 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        setupSearchBar()
+        setupSearchView()
         return binding.root
+    }
+
+    private fun setupSearchBar() {
+        binding.searchBar.setNavigationOnClickListener {
+            showToast("Clicked on navigation item")
+        }
+        binding.searchView.setupWithSearchBar(binding.searchBar)
+    }
+
+    private fun setupSearchView() {
+
+        binding.searchView.editText.setOnEditorActionListener { textView, actionId, event ->
+            // Handle the action on Enter key press
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+
+                val queryText = textView.text.toString()
+                binding.searchBar.setText(queryText)
+                showToast("You Entered: $queryText")
+                binding.searchView.hide()
+                true // Returning true indicates the action was handled
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
