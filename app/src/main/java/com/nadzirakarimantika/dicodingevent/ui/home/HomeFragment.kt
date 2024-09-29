@@ -2,7 +2,8 @@ package com.nadzirakarimantika.dicodingevent.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,18 +13,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.search.SearchView
-import com.google.android.material.search.SearchBar
-import com.nadzirakarimantika.dicodingevent.R
+import com.google.android.material.textfield.TextInputEditText
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentHomeBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
+import com.nadzirakarimantika.dicodingevent.ui.EventAdapter
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val homeViewModel: HomeViewModel by viewModels()
+    private lateinit var eventHorizontalAdapter: EventHorizontalAdapter
+    private lateinit var eventVerticalAdapter: EventVerticalAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,95 +33,68 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        binding.rvUpcoming.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        // Initialize the adapters with empty lists
+        eventHorizontalAdapter = EventHorizontalAdapter(emptyList()) { event -> navigateToDetailEvent(event) }
+        binding.rvUpcoming.adapter = eventHorizontalAdapter
+
+        eventVerticalAdapter = EventVerticalAdapter(emptyList()) { event -> navigateToDetailEvent(event) }
+        binding.rvEvent.adapter = eventVerticalAdapter
+
         setupSearchBar()
-        setupSearchView()
+
         return binding.root
-    }
-
-    private fun setupSearchBar() {
-        binding.searchBar.setNavigationOnClickListener {
-            showToast("Clicked on navigation item")
-        }
-        binding.searchView.setupWithSearchBar(binding.searchBar)
-    }
-
-    private fun setupSearchView() {
-
-        binding.searchView.editText.setOnEditorActionListener { textView, actionId, event ->
-            // Handle the action on Enter key press
-            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
-
-                val queryText = textView.text.toString()
-                binding.searchBar.setText(queryText)
-                showToast("You Entered: $queryText")
-                binding.searchView.hide()
-                true // Returning true indicates the action was handled
-            } else {
-                false
-            }
-        }
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val searchBar: SearchBar = binding.searchBar
-        val searchView: SearchView = binding.searchView
-
-        searchBar.setOnMenuItemClickListener {
-            searchView.show()
-            true
+        // Observe finished events and update vertical adapter
+        homeViewModel.listFinishedEvents.observe(viewLifecycleOwner) { listEvents ->
+            eventVerticalAdapter.updateEvents(listEvents)
         }
 
-        searchView.editText.setOnEditorActionListener { _, _, _ ->
-            val query = searchView.text.toString()
-            if (query.isNotBlank()) {
-                performSearch(query)
-            }
-            true
+        // Observe upcoming events and update horizontal adapter
+        homeViewModel.listUpcomingEvents.observe(viewLifecycleOwner) { listEvents ->
+            eventHorizontalAdapter.updateEvents(listEvents)
         }
-
-        searchView.addTransitionListener { _, _, newState ->
-            if (newState == SearchView.TransitionState.HIDDEN) {
-                searchView.hide()
-            }
-        }
-
-        // Set layout managers
-        binding.rvEvent.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.rvUpcoming.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-
-        // Observe list of events
-        homeViewModel.listFinishedEvents.observe(viewLifecycleOwner, Observer { listEvents ->
-            // Create separate adapter for horizontal RecyclerView
-            val eventVerticalAdapter = EventVerticalAdapter(listEvents) { event ->
-                navigateToDetailEvent(event)
-            }
-            binding.rvEvent.adapter = eventVerticalAdapter
-        })
-
-        // Observe upcoming events
-        homeViewModel.listUpcomingEvents.observe(viewLifecycleOwner, Observer { upcomingEvents ->
-            // Create separate adapter for vertical RecyclerView
-            val eventHorizontalAdapter = EventHorizontalAdapter(upcomingEvents) { event ->
-                navigateToDetailEvent(event)
-            }
-            binding.rvUpcoming.adapter = eventHorizontalAdapter
-        })
 
         // Observe loading state to show/hide progress bar
-        homeViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        })
+        }
 
-        // Trigger the view model to fetch the events
+        // Fetch events from ViewModel
         homeViewModel.findFinishedEvent()
         homeViewModel.findUpcomingEvent()
+    }
+
+    private fun setupSearchBar() {
+        val searchEditText: TextInputEditText = binding.searchEditText
+
+        // Set up TextWatcher for real-time text changes
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val query = s.toString()
+
+                // Filter the events list based on the search query for both finished and upcoming events
+                val filteredFinishedEvents = homeViewModel.listFinishedEvents.value?.filter { event ->
+                    event.name?.contains(query, ignoreCase = true) == true
+                } ?: emptyList()
+
+                val filteredUpcomingEvents = homeViewModel.listUpcomingEvents.value?.filter { event ->
+                    event.name?.contains(query, ignoreCase = true) == true
+                } ?: emptyList()
+
+                // Update the adapters with the filtered events
+                eventVerticalAdapter.updateEvents(filteredFinishedEvents)
+                eventHorizontalAdapter.updateEvents(filteredUpcomingEvents)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
     private fun navigateToDetailEvent(event: ListEventsItem) {
@@ -129,12 +104,8 @@ class HomeFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun performSearch(query: String) {
-        Toast.makeText(requireContext(), "Searching for: $query", Toast.LENGTH_SHORT).show()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        _binding = null // Prevent memory leaks
     }
 }

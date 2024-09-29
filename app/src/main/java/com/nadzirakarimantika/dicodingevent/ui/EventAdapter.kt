@@ -8,7 +8,7 @@ import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.ItemRowEventBinding
 
 class EventAdapter(
-    private val events: List<ListEventsItem>,
+    private var events: List<ListEventsItem>,
     private val onItemClick: (ListEventsItem) -> Unit
 ) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
@@ -25,6 +25,11 @@ class EventAdapter(
                 onItemClick(event) // Trigger the lambda with the clicked event
             }
         }
+    }
+
+    fun updateEvents(newEvents: List<ListEventsItem>) {
+        events = newEvents
+        notifyDataSetChanged() // Refresh the RecyclerView with new data
     }
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): EventViewHolder {

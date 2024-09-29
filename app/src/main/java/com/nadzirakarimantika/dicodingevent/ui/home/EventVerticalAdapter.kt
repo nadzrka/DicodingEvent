@@ -9,7 +9,7 @@ import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.ItemEventVerticalBinding
 
 class EventVerticalAdapter(
-    private val events: List<ListEventsItem>,
+    private var events: List<ListEventsItem>,
     private val onItemClick: (ListEventsItem) -> Unit
 ) : RecyclerView.Adapter<EventVerticalAdapter.EventViewHolder>() {
 
@@ -29,6 +29,11 @@ class EventVerticalAdapter(
                 onItemClick(event)
             }
         }
+    }
+
+    fun updateEvents(newEvents: List<ListEventsItem>) {
+        events = newEvents
+        notifyDataSetChanged() // Refresh the RecyclerView with new data
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {

@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nadzirakarimantika.dicodingevent.data.response.EventResponse
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.data.retrofit.ApiConfig
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,6 +21,8 @@ class HomeViewModel : ViewModel() {
     private val _listUpcomingEvents = MutableLiveData<List<ListEventsItem>>()
     val listUpcomingEvents: LiveData<List<ListEventsItem>> get() = _listUpcomingEvents
 
+    private val _events = MutableLiveData<List<ListEventsItem>>()
+    val data: LiveData<List<ListEventsItem>> get() = _events
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -50,6 +54,13 @@ class HomeViewModel : ViewModel() {
             }
         })
     }
+
+    fun filterData(query: String): List<ListEventsItem> {
+        return _events.value?.filter { event ->
+            event.name?.contains(query, ignoreCase = true) == true
+        } ?: emptyList()
+    }
+
 
     fun findUpcomingEvent() {
         _isLoading.value = true

@@ -2,13 +2,14 @@ package com.nadzirakarimantika.dicodingevent.ui.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.ItemEventHorizontalBinding
 
 class EventHorizontalAdapter(
-    private val events: List<ListEventsItem>,
+    private var events: List<ListEventsItem>,
     private val onItemClick: (ListEventsItem) -> Unit
 ) : RecyclerView.Adapter<EventHorizontalAdapter.EventViewHolder>() {
 
@@ -24,6 +25,11 @@ class EventHorizontalAdapter(
                 onItemClick(event)
             }
         }
+    }
+
+    fun updateEvents(newEvents: List<ListEventsItem>) {
+        events = newEvents
+        notifyDataSetChanged() // Refresh the RecyclerView with new data
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {

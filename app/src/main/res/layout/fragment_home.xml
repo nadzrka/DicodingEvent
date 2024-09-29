@@ -24,41 +24,31 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
-            <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/app_bar"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/searchBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/title_upcoming"
+            android:hint="Search">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/searchEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                android:backgroundTintMode="add"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.search.SearchBar
-                        android:id="@+id/search_bar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="?attr/colorPrimaryContainer" />
-            </com.google.android.material.appbar.AppBarLayout>
 
-            <com.google.android.material.search.SearchView
-                android:id="@+id/search_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/searchHint"
-                app:animateMenuItems="false"
-                app:iconifiedByDefault="true"
-                app:useDrawerArrowDrawable="true" />
-
-            <TextView
+        <TextView
             android:id="@+id/title_upcoming"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_upcoming"
             android:layout_margin="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/app_bar" />
+            app:layout_constraintTop_toBottomOf="@id/searchBar" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_upcoming"
@@ -68,7 +58,8 @@
             android:layout_marginVertical="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_upcoming"
-            app:layout_constraintBottom_toTopOf="@id/title_finished" />
+            app:layout_constraintBottom_toTopOf="@id/title_finished"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <TextView
             android:id="@+id/title_finished"
