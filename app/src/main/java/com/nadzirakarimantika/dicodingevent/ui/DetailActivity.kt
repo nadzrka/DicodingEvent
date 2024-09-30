@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import androidx.core.text.HtmlCompat
@@ -24,7 +25,7 @@ class DetailActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)  // Show the back button
-            setHomeAsUpIndicator(getDrawable(R.drawable.arrow_back_24dp_e8eaed_fill0_wght400_grad0_opsz24)) // Set custom back button with the desired color
+            setHomeAsUpIndicator(ContextCompat.getDrawable(this@DetailActivity, R.drawable.arrow_back_24dp_e8eaed_fill0_wght400_grad0_opsz24)) // Set custom back button
             title = "Detail Event"
         }
 
@@ -40,7 +41,7 @@ class DetailActivity : AppCompatActivity() {
         }
 
         // Observe the event details and update UI
-        detailViewModel.Event.observe(this, Observer { event ->
+        detailViewModel.event.observe(this, Observer { event ->
             // Update the UI with event details if event is not null
             if (event != null) {
                 binding.eventName.text =  HtmlCompat.fromHtml(

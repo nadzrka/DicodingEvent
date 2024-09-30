@@ -7,17 +7,13 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentHomeBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
-import com.nadzirakarimantika.dicodingevent.ui.EventAdapter
 
 class HomeFragment : Fragment() {
 

@@ -18,6 +18,7 @@
             android:id="@+id/img_item_photo"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/event_imagelogo"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent"

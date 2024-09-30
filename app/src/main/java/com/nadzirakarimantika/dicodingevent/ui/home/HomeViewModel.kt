@@ -4,11 +4,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.nadzirakarimantika.dicodingevent.data.response.EventResponse
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.data.retrofit.ApiConfig
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,7 +25,7 @@ class HomeViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    private val TAG = "FinishedViewModel"
+    private val tag = "FinishedViewModel"
 
     fun findFinishedEvent() {
         _isLoading.value = true
@@ -44,13 +42,13 @@ class HomeViewModel : ViewModel() {
                         _listFinishedEvents.value = responseBody.listEvents?.filterNotNull() ?: emptyList()
                     }
                 } else {
-                    Log.e(TAG, "onFailure: ${response.message()}")
+                    Log.e(tag, "onFailure: ${response.message()}")
                 }
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 _isLoading.value = false
-                Log.e(TAG, "onFailure: ${t.message}")
+                Log.e(tag, "onFailure: ${t.message}")
             }
         })
     }
@@ -77,13 +75,13 @@ class HomeViewModel : ViewModel() {
                         _listUpcomingEvents.value = responseBody.listEvents?.filterNotNull() ?: emptyList()
                     }
                 } else {
-                    Log.e(TAG, "onFailure: ${response.message()}")
+                    Log.e(tag, "onFailure: ${response.message()}")
                 }
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 _isLoading.value = false
-                Log.e(TAG, "onFailure: ${t.message}")
+                Log.e(tag, "onFailure: ${t.message}")
             }
         })
     }

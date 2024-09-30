@@ -32,7 +32,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@id/title_upcoming"
-            android:hint="Search">
+            android:hint="@string/search">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/searchEditText"
                 android:layout_width="match_parent"

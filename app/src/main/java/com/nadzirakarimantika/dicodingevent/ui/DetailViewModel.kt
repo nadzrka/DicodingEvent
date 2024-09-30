@@ -13,12 +13,12 @@ import retrofit2.Response
 
 class DetailViewModel : ViewModel() {
     private val _detailEvent = MutableLiveData<Event>()
-    val Event: LiveData<Event> get() = _detailEvent
+    val event: LiveData<Event> get() = _detailEvent
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    private val TAG = "DetailViewModel"
+    private val tag = "DetailViewModel"
 
     fun findEvent(eventId: String) {
         _isLoading.value = true
@@ -34,16 +34,16 @@ class DetailViewModel : ViewModel() {
                     if (responseBody?.event != null) {
                         _detailEvent.value = responseBody.event!!
                     } else {
-                        Log.e(TAG, "No event found in the response")
+                        Log.e(tag, "No event found in the response")
                     }
                 } else {
-                    Log.e(TAG, "Response not successful: ${response.message()}")
+                    Log.e(tag, "Response not successful: ${response.message()}")
                 }
             }
 
             override fun onFailure(call: Call<DetailResponse>, t: Throwable) {
                 _isLoading.value = false
-                Log.e(TAG, "onFailure: ${t.message}")
+                Log.e(tag, "onFailure: ${t.message}")
             }
         })
     }
