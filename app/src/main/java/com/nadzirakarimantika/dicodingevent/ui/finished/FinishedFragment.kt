@@ -20,37 +20,40 @@ class FinishedFragment : Fragment() {
     private val binding get() = _binding!!
     private val finishedViewModel: FinishedViewModel by viewModels()
 
+    private lateinit var eventAdapter: EventAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFinishedBinding.inflate(inflater, container, false)
-       return binding.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rvEvent.layoutManager = LinearLayoutManager(requireContext())
+        // Initialize the adapter with an empty list initially
+        eventAdapter = EventAdapter(emptyList()) { event ->
+            navigateToDetailEvent(event) // Handle click event for each item
+        }
 
-       finishedViewModel.listEvents.observe(viewLifecycleOwner, Observer { listEvents ->
-            val adapter = EventAdapter(listEvents) { event ->
-                // Handle the click event here, e.g., navigate to the detail screen
-                navigateToDetailEvent(event)
-            }
-            binding.rvEvent.adapter = adapter
+        // Set the adapter to the RecyclerView
+        binding.rvEvent.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvEvent.adapter = eventAdapter
+
+        // Observe listEvents from ViewModel and update the adapter when data is available
+        finishedViewModel.listEvents.observe(viewLifecycleOwner, Observer { listEvents ->
+            eventAdapter.updateEvents(listEvents) // Update the adapter with new data
         })
 
         // Observe loading state to show/hide progress bar
         finishedViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            if (isLoading) {
-                binding.progressBar.visibility = View.VISIBLE
-            } else {
-                binding.progressBar.visibility = View.GONE
-            }
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
 
+        // Fetch events from ViewModel
         finishedViewModel.findEvent()
     }
 

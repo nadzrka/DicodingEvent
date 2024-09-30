@@ -8,24 +8,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nadzirakarimantika.dicodingevent.data.response.DetailResponse
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
-import com.nadzirakarimantika.dicodingevent.data.retrofit.ApiService
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentUpcomingBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
 import com.nadzirakarimantika.dicodingevent.ui.EventAdapter
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
 
 class UpcomingFragment : Fragment() {
 
     private var _binding: FragmentUpcomingBinding? = null
     private val binding get() = _binding!!
     private val upcomingViewModel: UpcomingViewModel by viewModels()
+
+    private lateinit var eventAdapter: EventAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,32 +34,31 @@ class UpcomingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initialize adapter with an empty list and attach it to the RecyclerView
+        eventAdapter = EventAdapter(emptyList()) { event ->
+            navigateToDetailEvent(event)
+        }
         binding.rvEvent.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvEvent.adapter = eventAdapter
 
+        // Observe the list of events and update the adapter when data changes
         upcomingViewModel.listEvents.observe(viewLifecycleOwner, Observer { listEvents ->
-            val adapter = EventAdapter(listEvents) { event ->
-                // Handle the click event here, e.g., navigate to the detail screen
-                navigateToDetailEvent(event)
-            }
-            binding.rvEvent.adapter = adapter
+            eventAdapter.updateEvents(listEvents)
         })
 
         // Observe loading state to show/hide progress bar
         upcomingViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            if (isLoading) {
-                binding.progressBar.visibility = View.VISIBLE
-            } else {
-                binding.progressBar.visibility = View.GONE
-            }
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
 
+        // Fetch events from the ViewModel
         upcomingViewModel.findEvent()
     }
 
     private fun navigateToDetailEvent(event: ListEventsItem) {
-        // Start DetailActivity with event.id as an extra
+        // Start DetailActivity with the event ID as an extra
         val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-            putExtra(DetailActivity.EXTRA_EVENT_ID, event.id.toString()) // Pass the event ID
+            putExtra(DetailActivity.EXTRA_EVENT_ID, event.id.toString())
         }
         startActivity(intent)
     }
