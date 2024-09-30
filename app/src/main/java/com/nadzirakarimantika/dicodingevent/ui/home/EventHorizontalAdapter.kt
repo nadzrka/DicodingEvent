@@ -17,6 +17,10 @@ class EventHorizontalAdapter(
 
         fun bind(event: ListEventsItem) {
 
+            binding.eventName.text =  HtmlCompat.fromHtml(
+                event.name.toString(),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
             Glide.with(itemView.context)
                 .load(event.imageLogo)
                 .into(binding.eventPhoto)
