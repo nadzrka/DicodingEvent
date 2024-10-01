@@ -27,10 +27,11 @@ class EventAdapter(
         }
     }
 
-    fun updateEvents(newEvents: List<ListEventsItem>) {
-        events = newEvents
+    fun updateEvents(newEvents: List<ListEventsItem>?) {
+        events = newEvents ?: emptyList() // If newEvents is null, assign an empty list
         notifyDataSetChanged() // Refresh the RecyclerView with new data
     }
+
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): EventViewHolder {
         val binding = ItemRowEventBinding.inflate(LayoutInflater.from(p0.context), p0, false)

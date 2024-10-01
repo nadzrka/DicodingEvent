@@ -31,11 +31,8 @@ class DetailViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-                    if (responseBody?.event != null) {
-                        _detailEvent.value = responseBody.event!!
-                    } else {
-                        Log.e(tag, "No event found in the response")
-                    }
+                    val event = responseBody?.event ?: throw IllegalStateException("Event is null but expected a non-nullable value")
+                    _detailEvent.value = event
                 } else {
                     Log.e(tag, "Response not successful: ${response.message()}")
                 }

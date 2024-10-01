@@ -53,13 +53,6 @@ class HomeViewModel : ViewModel() {
         })
     }
 
-    fun filterData(query: String): List<ListEventsItem> {
-        return _events.value?.filter { event ->
-            event.name?.contains(query, ignoreCase = true) == true
-        } ?: emptyList()
-    }
-
-
     fun findUpcomingEvent() {
         _isLoading.value = true
         val client = ApiConfig.getApiService().getUpcomingEvent()

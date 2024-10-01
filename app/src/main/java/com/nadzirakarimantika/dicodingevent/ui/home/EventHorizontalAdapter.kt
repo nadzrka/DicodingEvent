@@ -31,8 +31,8 @@ class EventHorizontalAdapter(
         }
     }
 
-    fun updateEvents(newEvents: List<ListEventsItem>) {
-        events = newEvents
+    fun updateEvents(newEvents: List<ListEventsItem>?) {
+        events = newEvents ?: emptyList() // If newEvents is null, assign an empty list
         notifyDataSetChanged() // Refresh the RecyclerView with new data
     }
 
