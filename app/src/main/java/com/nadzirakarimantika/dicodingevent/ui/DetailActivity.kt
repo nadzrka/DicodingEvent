@@ -53,12 +53,8 @@ class DetailActivity : AppCompatActivity() {
                     event.category.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
-                binding.eventOwner.text =  HtmlCompat.fromHtml(
+                binding.eventOwner.text = HtmlCompat.fromHtml(
                     event.ownerName.toString(),
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
-                binding.eventRegistrants.text =  HtmlCompat.fromHtml(
-                    event.registrants.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 binding.eventLink.text =  HtmlCompat.fromHtml(

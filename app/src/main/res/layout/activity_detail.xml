@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/event_imagelogo"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars" />
@@ -26,8 +25,10 @@
             android:id="@+id/event_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="14dp"
-            android:padding="14dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginVertical="24dp"
+            android:fontFamily="sans-serif-black"
+            android:textSize="20dp"
             android:text="@string/event_name"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="@+id/imageView"
@@ -47,93 +48,74 @@
 
         <TextView
             android:id="@+id/event_category"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="14dp"
-            android:padding="14dp"
+            android:layout_marginHorizontal="24dp"
+            android:paddingVertical="4dp"
             android:text="@string/event_category"
-            app:layout_constraintEnd_toEndOf="@+id/imageView"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/event_name" />
+            android:textColor="@color/green"
+            app:layout_constraintStart_toStartOf="@id/imageView"
+            app:layout_constraintBottom_toTopOf="@id/event_owner"
+            app:layout_constraintEnd_toStartOf="@+id/event_city"
+            app:layout_constraintTop_toBottomOf="@+id/event_name"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/event_city"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="14dp"
-            android:padding="14dp"
+            android:layout_marginHorizontal="24dp"
+            android:paddingVertical="4dp"
             android:text="@string/event_name"
-            app:layout_constraintEnd_toEndOf="@+id/imageView"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/event_category" />
+            android:textColor="@color/green"
+            app:layout_constraintStart_toEndOf="@id/event_category"
+            app:layout_constraintTop_toTopOf="@+id/event_category" />
 
         <TextView
             android:id="@+id/event_owner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="14dp"
-            android:padding="14dp"
-            android:text="@string/event_owner"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginVertical="4dp"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/event_city" />
 
         <TextView
-            android:id="@+id/event_registrants"
+            android:id="@+id/event_summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="14dp"
-            android:padding="14dp"
-            android:text="@string/event_registrants"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginVertical="8dp"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:background="@color/green"
+            android:text="@string/event_summary"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/event_owner" />
-
-        <TextView
-            android:id="@+id/event_quota"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/event_quota"
-            android:layout_marginHorizontal="14dp"
-            android:padding="14dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_registrants" />
+            app:layout_constraintTop_toBottomOf="@+id/event_owner"/>
 
         <TextView
             android:id="@+id/event_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/description"
-            android:layout_marginHorizontal="14dp"
-            android:padding="14dp"
+            android:layout_marginHorizontal="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_quota" />
+            app:layout_constraintTop_toBottomOf="@+id/event_summary" />
 
         <TextView
             android:id="@+id/event_link"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/event_link"
-            android:layout_marginHorizontal="14dp"
-            android:padding="14dp"
+            android:layout_marginHorizontal="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.503"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/event_description" />
-
-        <TextView
-            android:id="@+id/event_summary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="14dp"
-            android:padding="14dp"
-            android:text="@string/event_summary"
-            app:layout_constraintEnd_toEndOf="@+id/imageView"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/event_link" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
