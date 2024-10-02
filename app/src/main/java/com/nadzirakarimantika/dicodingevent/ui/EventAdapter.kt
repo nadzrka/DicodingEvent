@@ -20,16 +20,15 @@ class EventAdapter(
                 .load(event.mediaCover)
                 .into(binding.imgItemPhoto)
 
-            // Set the click listener
             itemView.setOnClickListener {
-                onItemClick(event) // Trigger the lambda with the clicked event
+                onItemClick(event)
             }
         }
     }
 
     fun updateEvents(newEvents: List<ListEventsItem>?) {
-        events = newEvents ?: emptyList() // If newEvents is null, assign an empty list
-        notifyDataSetChanged() // Refresh the RecyclerView with new data
+        events = newEvents ?: emptyList()
+        notifyDataSetChanged()
     }
 
 

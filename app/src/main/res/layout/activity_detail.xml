@@ -28,8 +28,9 @@
             android:layout_marginHorizontal="24dp"
             android:layout_marginVertical="24dp"
             android:fontFamily="sans-serif-black"
-            android:textSize="20dp"
             android:text="@string/event_name"
+            android:textAlignment="gravity"
+            android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
@@ -47,17 +48,29 @@
             tools:visibility="visible" />
 
         <TextView
+            android:id="@+id/event_owner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginHorizontal="24dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/event_name" />
+
+        <TextView
             android:id="@+id/event_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:paddingVertical="4dp"
+            android:textSize="18sp"
             android:text="@string/event_category"
-            android:textColor="@color/green"
+            android:textColor="@color/blue"
             app:layout_constraintStart_toStartOf="@id/imageView"
-            app:layout_constraintBottom_toTopOf="@id/event_owner"
+            app:layout_constraintBottom_toBottomOf="@id/event_summary"
             app:layout_constraintEnd_toStartOf="@+id/event_city"
-            app:layout_constraintTop_toBottomOf="@+id/event_name"
+            app:layout_constraintTop_toBottomOf="@+id/event_owner"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
@@ -65,57 +78,79 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
+            android:layout_marginStart="20dp"
             android:paddingVertical="4dp"
-            android:text="@string/event_name"
-            android:textColor="@color/green"
+            android:text="@string/event_city"
+            android:textColor="@color/blue"
+            android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@id/event_category"
+            app:layout_constraintTop_toBottomOf="@id/event_owner"
             app:layout_constraintTop_toTopOf="@+id/event_category" />
 
         <TextView
-            android:id="@+id/event_owner"
-            android:layout_width="match_parent"
+            android:id="@+id/event_beginTime"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
-            android:layout_marginVertical="4dp"
+            android:paddingVertical="4dp"
+            android:text="@string/begin_time"
+            android:textSize="18sp"
+            app:drawableStartCompat="@drawable/schedule_24dp_000000_fill0_wght400_grad0_opsz24"
+            app:layout_constraintBottom_toTopOf="@+id/event_quota"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/event_city" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/imageView"
+            app:layout_constraintTop_toBottomOf="@id/event_category" />
+
+        <TextView
+            android:id="@+id/event_quota"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:paddingVertical="4dp"
+            android:text="@string/event_quota"
+            android:textSize="18sp"
+            app:drawableStartCompat="@drawable/group_24dp_000000_fill0_wght400_grad0_opsz24"
+            app:layout_constraintBottom_toTopOf="@+id/event_summary"
+            app:layout_constraintStart_toStartOf="@id/imageView"
+            app:layout_constraintTop_toBottomOf="@id/event_beginTime" />
 
         <TextView
             android:id="@+id/event_summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
-            android:layout_marginVertical="8dp"
+            android:layout_marginVertical="14dp"
+            android:background="@color/light_blue"
             android:padding="10dp"
-            android:textColor="@color/white"
-            android:background="@color/green"
+            android:textSize="20sp"
             android:text="@string/event_summary"
+            android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/event_owner"/>
+            app:layout_constraintTop_toBottomOf="@+id/event_quota" />
 
         <TextView
             android:id="@+id/event_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/description"
             android:layout_marginHorizontal="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginVertical="14dp"
+            android:text="@string/description"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/event_summary" />
 
-        <TextView
-            android:id="@+id/event_link"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/linkButton"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:text="@string/event_link"
-            android:layout_marginHorizontal="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.503"
+            android:text="@string/Register"
+            android:layout_marginVertical="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_description" />
-
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/event_description"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

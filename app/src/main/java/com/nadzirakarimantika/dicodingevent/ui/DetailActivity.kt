@@ -1,5 +1,7 @@
 package com.nadzirakarimantika.dicodingevent.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -45,7 +47,7 @@ class DetailActivity : AppCompatActivity() {
                     event.name.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
-                binding.eventDescription.text = HtmlCompat.fromHtml(
+                binding.eventDescription.text =  HtmlCompat.fromHtml(
                     event.description.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
@@ -57,10 +59,6 @@ class DetailActivity : AppCompatActivity() {
                     event.ownerName.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
-                binding.eventLink.text =  HtmlCompat.fromHtml(
-                    event.link.toString(),
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
                 binding.eventCity.text =  HtmlCompat.fromHtml(
                     event.cityName.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
@@ -69,7 +67,21 @@ class DetailActivity : AppCompatActivity() {
                     event.summary.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
-                // Load image using Glide
+                binding.eventQuota.text =  HtmlCompat.fromHtml(
+                    event.quota.toString(),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                binding.eventBeginTime.text =  HtmlCompat.fromHtml(
+                    event.beginTime.toString(),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+
+                binding.linkButton.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(event.link.toString())
+                    startActivity(intent)
+                }
+
                 Glide.with(this)
                     .load(event.mediaCover)
                     .into(binding.imageView)

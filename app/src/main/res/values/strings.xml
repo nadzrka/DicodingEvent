@@ -21,4 +21,6 @@
     <string name="finished_events">Finished Events</string>
     <string name="event_description">event description</string>
     <string name="search">search</string>
+    <string name="event_city">event city</string>
+    <string name="Register">Register</string>
 </resources>

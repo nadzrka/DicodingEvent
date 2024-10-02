@@ -3,7 +3,7 @@
     <style name="Base.Theme.DicodingEvent" parent="Theme.Material3.DayNight">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimary">@color/blue</item>
         <!-- Customize the text appearance of the title -->
         <item name="android:textColorPrimary">@color/white</item>
         <!-- Customize subtitle text -->
