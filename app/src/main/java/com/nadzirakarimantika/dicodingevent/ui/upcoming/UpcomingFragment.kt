@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentUpcomingBinding
@@ -42,14 +41,14 @@ class UpcomingFragment : Fragment() {
         binding.rvEvent.adapter = eventAdapter
 
         // Observe the list of events and update the adapter when data changes
-        upcomingViewModel.listEvents.observe(viewLifecycleOwner, Observer { listEvents ->
+        upcomingViewModel.listEvents.observe(viewLifecycleOwner) { listEvents ->
             eventAdapter.updateEvents(listEvents)
-        })
+        }
 
         // Observe loading state to show/hide progress bar
-        upcomingViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+        upcomingViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        })
+        }
 
         // Fetch events from the ViewModel
         upcomingViewModel.findEvent()
