@@ -35,3 +35,4 @@ class HomeActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 }
+

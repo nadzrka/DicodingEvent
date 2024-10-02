@@ -20,9 +20,6 @@ class UpcomingViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    private val _toastMessage = MutableLiveData<String?>()
-    val toastMessage: LiveData<String?> get() = _toastMessage
-
     private val TAG = "UpcomingViewModel"
 
     fun findEvent() {
@@ -37,27 +34,17 @@ class UpcomingViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
-                        val events = responseBody.listEvents?.filterNotNull() ?: emptyList()
-                        _listEvents.value = events
-                        if (events.isEmpty()) {
-                            _toastMessage.value = "No events found matching your search."
-                        }
+                        _listEvents.value = responseBody.listEvents?.filterNotNull() ?: emptyList()
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
-                    _toastMessage.value = "No events found matching your search."
                 }
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 _isLoading.value = false
                 Log.e(TAG, "onFailure: ${t.message}")
-                _toastMessage.value = "Failed to load events: ${t.message}"
             }
         })
-    }
-
-    fun clearToastMessage() {
-        _toastMessage.value = null
     }
 }
