@@ -1,11 +1,13 @@
 package com.nadzirakarimantika.dicodingevent.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import androidx.core.text.HtmlCompat
 import com.nadzirakarimantika.dicodingevent.R
@@ -23,8 +25,8 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)  // Show the back button
-            setHomeAsUpIndicator(getDrawable(R.drawable.arrow_back_24dp_e8eaed_fill0_wght400_grad0_opsz24)) // Set custom back button with the desired color
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(ContextCompat.getDrawable(this@DetailActivity, R.drawable.arrow_back_24dp_e8eaed_fill0_wght400_grad0_opsz24)) // Set custom back button
             title = "Detail Event"
         }
 
@@ -39,15 +41,13 @@ class DetailActivity : AppCompatActivity() {
             Log.e("DetailActivity", "Event ID is null")
         }
 
-        // Observe the event details and update UI
-        detailViewModel.Event.observe(this, Observer { event ->
-            // Update the UI with event details if event is not null
+        detailViewModel.event.observe(this) { event ->
             if (event != null) {
                 binding.eventName.text =  HtmlCompat.fromHtml(
                     event.name.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
-                binding.eventDescription.text = HtmlCompat.fromHtml(
+                binding.eventDescription.text =  HtmlCompat.fromHtml(
                     event.description.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
@@ -55,16 +55,8 @@ class DetailActivity : AppCompatActivity() {
                     event.category.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
-                binding.eventOwner.text =  HtmlCompat.fromHtml(
+                binding.eventOwner.text = HtmlCompat.fromHtml(
                     event.ownerName.toString(),
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
-                binding.eventRegistrants.text =  HtmlCompat.fromHtml(
-                    event.registrants.toString(),
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
-                binding.eventLink.text =  HtmlCompat.fromHtml(
-                    event.link.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 binding.eventCity.text =  HtmlCompat.fromHtml(
@@ -75,16 +67,29 @@ class DetailActivity : AppCompatActivity() {
                     event.summary.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
-                // Load image using Glide
+                binding.eventQuota.text =  HtmlCompat.fromHtml(
+                    event.quota.toString(),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                binding.eventBeginTime.text =  HtmlCompat.fromHtml(
+                    event.beginTime.toString(),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+
+                binding.linkButton.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(event.link.toString())
+                    startActivity(intent)
+                }
+
                 Glide.with(this)
                     .load(event.mediaCover)
                     .into(binding.imageView)
             } else {
                 Log.e("DetailActivity", "Event data is null")
             }
-        })
+        }
 
-        // Observe the loading state and show/hide progress bar
         detailViewModel.isLoading.observe(this) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
@@ -92,7 +97,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressedDispatcher.onBackPressed()  // Use the dispatcher instead of the deprecated method
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
 

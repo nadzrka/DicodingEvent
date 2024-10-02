@@ -25,4 +25,6 @@
     <string name="search">search</string>
     <string name="lorem">lorem</string>
     <string name="searchHint">search</string>
+    <string name="Register">register</string>
+    <string name="event_city">event city</string>
 </resources>

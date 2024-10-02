@@ -13,7 +13,7 @@ import retrofit2.Response
 
 class DetailViewModel : ViewModel() {
     private val _detailEvent = MutableLiveData<Event>()
-    val Event: LiveData<Event> get() = _detailEvent
+    val event: LiveData<Event> get() = _detailEvent
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
