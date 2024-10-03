@@ -2,7 +2,6 @@ package com.nadzirakarimantika.dicodingevent.ui.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
@@ -16,7 +15,6 @@ class EventHorizontalAdapter(
     inner class EventViewHolder(private val binding: ItemEventHorizontalBinding, val onItemClick: (ListEventsItem) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(event: ListEventsItem) {
-
             Glide.with(itemView.context)
                 .load(event.imageLogo)
                 .into(binding.eventPhoto)
@@ -27,8 +25,8 @@ class EventHorizontalAdapter(
         }
     }
 
-    fun updateEvents(newEvents: List<ListEventsItem>) {
-        events = newEvents
+    fun updateEvents(newEvents: List<ListEventsItem>?) {
+        events = newEvents ?: emptyList() // If newEvents is null, assign an empty list
         notifyDataSetChanged() // Refresh the RecyclerView with new data
     }
 
