@@ -25,6 +25,8 @@
     <string name="search">search</string>
     <string name="lorem">lorem</string>
     <string name="searchHint">search</string>
-    <string name="Register">register</string>
+    <string name="Register">Register</string>
     <string name="event_city">event city</string>
+    <string name="no_internet_connection">No Internet Connection</string>
+    <string name="Search">Search</string>
 </resources>

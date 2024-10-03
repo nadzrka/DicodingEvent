@@ -1,6 +1,12 @@
 package com.nadzirakarimantika.dicodingevent
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
+import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -16,12 +22,16 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         supportActionBar?.apply {
              title = "Home"
         }
 
-        binding = ActivityHomeBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        if (!isConnectedToInternet()) {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+        }
 
         val navView: BottomNavigationView = binding.navView
 
@@ -33,6 +43,17 @@ class HomeActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    private fun isConnectedToInternet(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return when {
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            else -> false
+        }
     }
 }
 
