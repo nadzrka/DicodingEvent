@@ -16,7 +16,7 @@
 
         <ImageView
             android:id="@+id/img_item_photo"
-            android:layout_width="150dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:contentDescription="@string/event_imagelogo"
             card_view:layout_constraintBottom_toBottomOf="parent"
@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="12dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:gravity="center_vertical"
             card_view:layout_constraintTop_toTopOf="@id/img_item_photo"
