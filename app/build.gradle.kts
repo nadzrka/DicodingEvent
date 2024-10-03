@@ -45,6 +45,7 @@ android {
 
 dependencies {
 
+    implementation(libs.androidxFragmentKtx)
     implementation (libs.material3)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.glide)
