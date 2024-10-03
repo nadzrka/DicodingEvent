@@ -12,6 +12,7 @@
 
         <ImageView
             android:id="@+id/eventPhoto"
+            android:contentDescription="@string/event_imagelogo"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:scaleType="fitXY" />
