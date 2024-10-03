@@ -13,8 +13,5 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="CustomToolbarTheme" parent="Base.Theme.DicodingEvent">
-    </style>
-
     <style name="Theme.DicodingEvent" parent="Base.Theme.DicodingEvent" />
 </resources>
