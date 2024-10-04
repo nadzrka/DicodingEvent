@@ -24,23 +24,18 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/searchBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="10dp"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_margin="24dp"
+            android:background="@drawable/search"
+            android:iconifiedByDefault="false"
+            app:layout_constraintBottom_toTopOf="@id/rv_event"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/title_upcoming"
-            android:hint="@string/Search">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/searchEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
-
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/title_upcoming"
@@ -50,7 +45,7 @@
             android:fontFamily="sans-serif-black"
             android:text="@string/title_upcoming"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchBar" />
+            app:layout_constraintTop_toBottomOf="@id/searchView" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_upcoming"
@@ -70,6 +65,7 @@
             android:layout_margin="20dp"
             android:fontFamily="sans-serif-black"
             android:text="@string/finished_events"
+            app:layout_constraintBottom_toTopOf="@id/rv_event"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rv_upcoming" />
 

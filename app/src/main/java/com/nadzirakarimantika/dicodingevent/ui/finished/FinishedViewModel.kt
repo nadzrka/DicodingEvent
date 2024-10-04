@@ -21,6 +21,9 @@ class FinishedViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
+    private val _showToastMessage = MutableLiveData<String?>()
+    val showToastMessage: LiveData<String?> get() = _showToastMessage
+
     private val tag = "FinishedViewModel"
 
     fun findEvent() {
@@ -37,6 +40,9 @@ class FinishedViewModel : ViewModel() {
                     if (responseBody != null) {
                         _listEvents.value = responseBody.listEvents?.filterNotNull() ?: emptyList()
                     }
+                    if (_listEvents.value.isNullOrEmpty()){
+                        _showToastMessage.value = "No events found"
+                    }
                 } else {
                     Log.e(tag, "onFailure: ${response.message()}")
                 }
@@ -47,5 +53,38 @@ class FinishedViewModel : ViewModel() {
                 Log.e(tag, "onFailure: ${t.message}")
             }
         })
+    }
+
+    fun searchEvents(query: String) {
+        _isLoading.value = true
+        val client = ApiConfig.getApiService().searchFinishedEvents(query)
+        client.enqueue(object : Callback<EventResponse> {
+            override fun onResponse(
+                call: Call<EventResponse>,
+                response: Response<EventResponse>
+            ) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        _listEvents.value = responseBody.listEvents?.filterNotNull() ?: emptyList()
+                    }
+                    if (_listEvents.value.isNullOrEmpty()){
+                        _showToastMessage.value = "No events found"
+                    }
+                } else {
+                    Log.e(tag, "onFailure: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
+                _isLoading.value = false
+                Log.e(tag, "onFailure: ${t.message}")
+            }
+        })
+    }
+
+    fun clearToastMessage() {
+        _showToastMessage.value = null
     }
 }

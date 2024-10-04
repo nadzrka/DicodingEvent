@@ -3,7 +3,7 @@
     <style name="Base.Theme.DicodingEvent" parent="Theme.Material3.DayNight">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimary">@color/blue</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
         <item name="actionMenuTextColor">@color/white</item>
