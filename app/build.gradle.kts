@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
-}
+    alias(libs.plugins.jetbrains.kotlin.android)}
 
 android {
     namespace = "com.nadzirakarimantika.dicodingevent"
@@ -39,6 +38,7 @@ android {
     }
 
     buildFeatures {
+        //noinspection DataBindingWithoutKapt
         dataBinding = true
     }
 }
