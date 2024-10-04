@@ -1,3 +1,4 @@
+@file:Suppress("unused", "RedundantSuppression")
 package com.nadzirakarimantika.dicodingevent.ui
 
 import android.util.Log

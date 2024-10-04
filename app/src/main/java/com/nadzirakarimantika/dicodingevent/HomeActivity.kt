@@ -1,3 +1,5 @@
+@file:Suppress("unused", "RedundantSuppression")
+
 package com.nadzirakarimantika.dicodingevent
 
 import android.content.Context

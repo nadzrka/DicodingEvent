@@ -1,5 +1,7 @@
+@file:Suppress("unused", "RedundantSuppression")
 package com.nadzirakarimantika.dicodingevent.ui
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -22,14 +24,15 @@ class EventAdapter(
 
             // Set the click listener
             itemView.setOnClickListener {
-                onItemClick(event) // Trigger the lambda with the clicked event
+                onItemClick(event)
             }
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateEvents(newEvents: List<ListEventsItem>) {
         events = newEvents
-        notifyDataSetChanged() // Refresh the RecyclerView with new data
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): EventViewHolder {

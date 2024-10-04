@@ -1,5 +1,8 @@
+@file:Suppress("unused", "RedundantSuppression")
+
 package com.nadzirakarimantika.dicodingevent.ui.home
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -25,9 +28,10 @@ class EventHorizontalAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateEvents(newEvents: List<ListEventsItem>?) {
-        events = newEvents ?: emptyList() // If newEvents is null, assign an empty list
-        notifyDataSetChanged() // Refresh the RecyclerView with new data
+        events = newEvents ?: emptyList()
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
