@@ -148,11 +148,12 @@
 
         <Button
             android:id="@+id/linkButton"
-            android:layout_width="300dp"
+            style="@style/TextAppearanceWhite"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
+            android:fontFamily="sans-serif-medium"
             android:text="@string/Register"
-            style="@style/TextAppearanceWhite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
