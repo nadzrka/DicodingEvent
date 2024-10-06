@@ -74,24 +74,20 @@ class HomeFragment : Fragment() {
         binding.searchView.visibility = View.VISIBLE
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    if (it.isNotEmpty()){
-                        homeViewModel.searchUpcomingEvents(it)
-                        homeViewModel.searchFinishedEvents(it)
-                    } else {
-                        homeViewModel.findUpcomingEvent()
-                        homeViewModel.findFinishedEvent()
-                    }
+                if (!query.isNullOrEmpty()){
+                    homeViewModel.searchUpcomingEvents(query)
+                    homeViewModel.searchFinishedEvents(query)
+                } else {
+                    homeViewModel.findUpcomingEvent()
+                    homeViewModel.findFinishedEvent()
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let {
-                    if (it.isEmpty()) {
-                        homeViewModel.findUpcomingEvent()
-                        homeViewModel.findFinishedEvent()
-                    }
+                if (newText.isNullOrEmpty()) {
+                    homeViewModel.findFinishedEvent()
+                    homeViewModel.findUpcomingEvent()
                 }
                 return true
             }

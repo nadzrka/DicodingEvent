@@ -1,6 +1,6 @@
 @file:Suppress("unused", "RedundantSuppression")
 
-package com.nadzirakarimantika.dicodingevent
+package com.nadzirakarimantika.dicodingevent.ui
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -9,10 +9,11 @@ import android.os.Bundle
 import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity() {
@@ -33,9 +34,12 @@ class HomeActivity : AppCompatActivity() {
             Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
         }
 
+
         val navView: BottomNavigationView = binding.navView
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_home)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_home) as NavHostFragment
+        val navController = navHostFragment.navController
+
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home, R.id.navigation_upcoming, R.id.navigation_finished

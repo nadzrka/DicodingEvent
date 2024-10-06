@@ -36,9 +36,10 @@ class UpcomingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        eventAdapter = EventAdapter(emptyList()) { event ->
+        eventAdapter = EventAdapter(mutableListOf()) { event ->
             navigateToDetailEvent(event)
         }
+
         binding.rvEvent.layoutManager = LinearLayoutManager(requireContext())
         binding.rvEvent.adapter = eventAdapter
 
@@ -59,30 +60,26 @@ class UpcomingFragment : Fragment() {
             }
         }
 
-        upcomingViewModel.findEvent()
+        upcomingViewModel.findUpcomingEvents()
     }
 
     private fun setupSearchView() {
         val searchView = binding.searchView
 
-        binding.searchView.visibility = View.VISIBLE
+        searchView.visibility = View.VISIBLE
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    if (it.isNotEmpty()){
-                        upcomingViewModel.searchEvents(it)
-                    } else {
-                        upcomingViewModel.findEvent()
-                    }
+                if (!query.isNullOrEmpty()) {
+                    upcomingViewModel.searchUpcomingEvents(query)
+                } else {
+                    upcomingViewModel.findUpcomingEvents()
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let {
-                    if (it.isEmpty()) {
-                        upcomingViewModel.findEvent()
-                    }
+                if (newText.isNullOrEmpty()) {
+                   upcomingViewModel.findUpcomingEvents()
                 }
                 return true
             }

@@ -36,7 +36,7 @@ class FinishedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        eventAdapter = EventAdapter(emptyList()) { event ->
+        eventAdapter = EventAdapter(mutableListOf()) { event ->
             navigateToDetailEvent(event)
         }
 
@@ -60,7 +60,7 @@ class FinishedFragment : Fragment() {
             }
         }
 
-        finishedViewModel.findEvent()
+        finishedViewModel.findFinishedEvent()
     }
 
     private fun setupSearchView() {
@@ -69,21 +69,17 @@ class FinishedFragment : Fragment() {
         binding.searchView.visibility = View.VISIBLE
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    if (it.isNotEmpty()){
-                        finishedViewModel.searchEvents(it)
-                    } else {
-                        finishedViewModel.findEvent()
-                    }
+                if (!query.isNullOrEmpty()) {
+                    finishedViewModel.searchFinishedEvents(query)
+                } else {
+                    finishedViewModel.findFinishedEvent()
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let {
-                    if (it.isEmpty()) {
-                        finishedViewModel.findEvent()
-                    }
+                if (newText.isNullOrEmpty()) {
+                    finishedViewModel.findFinishedEvent()
                 }
                 return true
             }
