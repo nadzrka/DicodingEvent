@@ -43,8 +43,10 @@ class DetailActivity : AppCompatActivity() {
             Log.e("DetailActivity", "Event ID is null")
         }
 
+
         detailViewModel.event.observe(this) { event ->
             if (event != null) {
+                val remainingQuota = (event.quota ?: 0) - (event.registrants ?: 0)
                 binding.eventName.text =  HtmlCompat.fromHtml(
                     event.name.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
@@ -70,7 +72,7 @@ class DetailActivity : AppCompatActivity() {
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 binding.eventQuota.text =  HtmlCompat.fromHtml(
-                    event.quota.toString(),
+                    "Remaining quota: $remainingQuota",
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 binding.eventBeginTime.text =  HtmlCompat.fromHtml(
