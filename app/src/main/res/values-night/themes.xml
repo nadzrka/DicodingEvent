@@ -1,16 +1,5 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Base.Theme.DicodingEvent.Night" parent="Theme.Material3.DayNight">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="colorPrimary">@color/blue</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/black</item>
-        <item name="actionMenuTextColor">@color/black</item>
-        <item name="android:textSize">18sp</item>
-    </style>
-
-    <style name="Theme.DicodingEvent.Night" parent="Base.Theme.DicodingEvent.Night" />
     <style name="TextAppearanceBlack" parent="TextAppearance.Material3.BodyMedium">
         <item name="android:textColor">@color/black</item>
     </style>

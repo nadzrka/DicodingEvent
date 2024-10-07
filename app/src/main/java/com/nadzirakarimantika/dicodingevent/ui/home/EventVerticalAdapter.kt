@@ -20,7 +20,7 @@ class EventVerticalAdapter(
 
         fun bind(event: ListEventsItem) {
 
-            binding.tvItemName.text =  HtmlCompat.fromHtml(
+            binding.eventName.text =  HtmlCompat.fromHtml(
                 event.name.toString(),
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
