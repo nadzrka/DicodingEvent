@@ -60,7 +60,7 @@ class DetailActivity : AppCompatActivity() {
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 binding.eventOwner.text = HtmlCompat.fromHtml(
-                    event.ownerName.toString(),
+                    "Diselenggarakan oleh: " + event.ownerName.toString(),
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 binding.eventCity.text =  HtmlCompat.fromHtml(
@@ -72,7 +72,7 @@ class DetailActivity : AppCompatActivity() {
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 binding.eventQuota.text =  HtmlCompat.fromHtml(
-                    "Remaining quota: $remainingQuota",
+                    "Sisa quota: $remainingQuota",
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 binding.eventBeginTime.text =  HtmlCompat.fromHtml(
