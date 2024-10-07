@@ -5,6 +5,7 @@ package com.nadzirakarimantika.dicodingevent.ui.home
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
@@ -18,6 +19,10 @@ class EventHorizontalAdapter(
     inner class EventViewHolder(private val binding: ItemEventHorizontalBinding, val onItemClick: (ListEventsItem) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(event: ListEventsItem) {
+            binding.eventTitle.text =  HtmlCompat.fromHtml(
+                event.name.toString(),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
             Glide.with(itemView.context)
                 .load(event.imageLogo)
                 .into(binding.eventPhoto)
