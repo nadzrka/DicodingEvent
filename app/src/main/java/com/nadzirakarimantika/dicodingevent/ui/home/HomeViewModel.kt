@@ -21,9 +21,6 @@ class HomeViewModel : ViewModel() {
     private val _listUpcomingEvents = MutableLiveData<List<ListEventsItem>>()
     val listUpcomingEvents: LiveData<List<ListEventsItem>> get() = _listUpcomingEvents
 
-    private val _events = MutableLiveData<List<ListEventsItem>>()
-    val data: LiveData<List<ListEventsItem>> get() = _events
-
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 

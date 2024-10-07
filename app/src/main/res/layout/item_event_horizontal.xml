@@ -22,12 +22,12 @@
 
                 <TextView
                     android:id="@+id/eventTitle"
-                    android:ellipsize="end"
                     android:textStyle="bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:maxLines="2"
+                    android:ellipsize="end"
                     android:padding="10dp"
                     android:text="@string/event_name" />
         </LinearLayout>
