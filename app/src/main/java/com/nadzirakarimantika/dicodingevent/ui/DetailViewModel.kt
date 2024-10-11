@@ -19,6 +19,9 @@ class DetailViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
+    private val _showToastMessage = MutableLiveData<String?>()
+    val showToastMessage: LiveData<String?> get() = _showToastMessage
+
     private val tag = "DetailViewModel"
 
     fun findEvent(eventId: String) {
@@ -35,13 +38,14 @@ class DetailViewModel : ViewModel() {
                     val event = responseBody?.event ?: throw IllegalStateException("Event is null but expected a non-nullable value")
                     _detailEvent.value = event
                 } else {
-                    Log.e(tag, "Response not successful: ${response.message()}")
+                    _showToastMessage.value = response.message()
                 }
             }
 
             override fun onFailure(call: Call<DetailResponse>, t: Throwable) {
                 _isLoading.value = false
                 Log.e(tag, "onFailure: ${t.message}")
+                _showToastMessage.value = "Failed to load events. Please try again."
             }
         })
     }

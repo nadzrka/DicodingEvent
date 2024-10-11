@@ -2,11 +2,15 @@
 
 package com.nadzirakarimantika.dicodingevent.ui
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -16,10 +20,6 @@ import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.databinding.ActivityDetailBinding
 
 class DetailActivity : AppCompatActivity() {
-    companion object {
-        const val EXTRA_EVENT_ID = "extra_event_id"
-    }
-
     private lateinit var binding: ActivityDetailBinding
     private val detailViewModel: DetailViewModel by viewModels()
 
@@ -29,7 +29,11 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(ContextCompat.getDrawable(this@DetailActivity, R.drawable.arrow_back_24dp_e8eaed_fill0_wght400_grad0_opsz24)) // Set custom back button
-            title = "Detail Event"
+            title = getString(R.string.detail_event)
+        }
+
+        if (!isConnectedToInternet()) {
+            Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
         }
 
         binding = ActivityDetailBinding.inflate(layoutInflater)
@@ -42,7 +46,6 @@ class DetailActivity : AppCompatActivity() {
         } else {
             Log.e("DetailActivity", "Event ID is null")
         }
-
 
         detailViewModel.event.observe(this) { event ->
             if (event != null) {
@@ -100,9 +103,24 @@ class DetailActivity : AppCompatActivity() {
 
     }
 
+    private fun isConnectedToInternet(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return when {
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            else -> false
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return true
+    }
+
+    companion object {
+        const val EXTRA_EVENT_ID = "extra_event_id"
     }
 
 }

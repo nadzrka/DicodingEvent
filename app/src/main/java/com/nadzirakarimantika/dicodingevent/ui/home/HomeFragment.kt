@@ -46,12 +46,33 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val tvNoEvent = binding.tvNoEvent
+        val tvNoEvent2 = binding.tvNoEvent2
+        val rvEvent = binding.rvEvent
+        val rvUpcoming = binding.rvUpcoming
+
         homeViewModel.listFinishedEvents.observe(viewLifecycleOwner) { listEvents ->
-            eventVerticalAdapter.updateEvents(listEvents)
+            if (listEvents.isEmpty()) {
+                tvNoEvent.visibility = View.VISIBLE
+                tvNoEvent2.visibility = View.VISIBLE
+                rvEvent.visibility = View.GONE
+            } else {
+                tvNoEvent.visibility = View.GONE
+                rvEvent.visibility = View.VISIBLE
+                eventVerticalAdapter.updateEvents(listEvents)
+            }
         }
 
         homeViewModel.listUpcomingEvents.observe(viewLifecycleOwner) { listEvents ->
-            eventHorizontalAdapter.updateEvents(listEvents)
+            if (listEvents.isEmpty()) {
+                tvNoEvent.visibility = View.VISIBLE
+                rvUpcoming.visibility = View.GONE
+                tvNoEvent2.visibility = View.VISIBLE
+            } else {
+                tvNoEvent.visibility = View.GONE
+                rvUpcoming.visibility = View.VISIBLE
+                eventHorizontalAdapter.updateEvents(listEvents)
+            }
         }
 
         homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->

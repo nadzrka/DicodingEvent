@@ -18,4 +18,8 @@
     <string name="finished_events">Finished Events</string>
     <string name="Register">Register</string>
     <string name="event_city">event city</string>
+    <string name="detail_event">Detail Event</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="no_events_found">No events found</string>
+    <string name="home">Home</string>
 </resources>

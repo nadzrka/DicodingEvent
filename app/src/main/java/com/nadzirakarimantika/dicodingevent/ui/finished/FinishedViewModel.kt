@@ -38,13 +38,14 @@ class FinishedViewModel : ViewModel() {
                         _showToastMessage.value = "No events found"
                     }
                 } else {
-                    Log.e(tag, "onFailure: ${response.message()}")
+                    _showToastMessage.value = response.message()
                 }
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 _isLoading.value = false
                 Log.e(tag, "onFailure: ${t.message}")
+                _showToastMessage.value = "Failed to load events. Please try again."
             }
         })
     }

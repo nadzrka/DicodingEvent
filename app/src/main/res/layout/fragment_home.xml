@@ -12,6 +12,41 @@
         android:layout_height="match_parent"
         android:paddingBottom="100dp">
 
+        <TextView
+            android:id="@+id/tv_no_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_events_found"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:textColorHint="@color/blue"
+            android:layout_gravity="center"
+            android:textSize="18sp"
+            android:paddingVertical="30dp"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintTop_toBottomOf="@id/title_upcoming"
+            app:layout_constraintBottom_toTopOf="@id/title_finished"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/tv_no_event2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_events_found"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:textColorHint="@color/blue"
+            android:layout_gravity="center"
+            android:textSize="18sp"
+            android:paddingVertical="30dp"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintTop_toBottomOf="@id/title_finished"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@android:color/black"/>
+
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyle"

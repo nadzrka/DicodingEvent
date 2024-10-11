@@ -2,7 +2,6 @@
 
 package com.nadzirakarimantika.dicodingevent.ui.home
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
@@ -33,7 +32,6 @@ class EventHorizontalAdapter(
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateEvents(newEvents: List<ListEventsItem>?) {
         events = newEvents ?: emptyList()
         notifyDataSetChanged()

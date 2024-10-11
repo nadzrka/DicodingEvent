@@ -27,13 +27,12 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.apply {
-             title = "Home"
+             title = getString(R.string.home)
         }
 
         if (!isConnectedToInternet()) {
-            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
         }
-
 
         val navView: BottomNavigationView = binding.navView
 

@@ -35,6 +35,8 @@ class UpcomingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val tvNoEvent = binding.tvNoEvent
+        val rvUpcoming = binding.rvEvent
 
         eventAdapter = EventAdapter(mutableListOf()) { event ->
             navigateToDetailEvent(event)
@@ -46,7 +48,14 @@ class UpcomingFragment : Fragment() {
         setupSearchView()
 
         upcomingViewModel.listEvents.observe(viewLifecycleOwner) { listEvents ->
-            eventAdapter.updateEvents(listEvents)
+            if (listEvents.isEmpty()) {
+                tvNoEvent.visibility = View.VISIBLE
+                rvUpcoming.visibility = View.GONE
+            } else {
+                tvNoEvent.visibility = View.GONE
+                rvUpcoming.visibility = View.VISIBLE
+                eventAdapter.updateEvents(listEvents)
+            }
         }
 
         upcomingViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->

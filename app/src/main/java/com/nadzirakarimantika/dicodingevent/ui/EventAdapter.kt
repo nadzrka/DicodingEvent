@@ -1,7 +1,6 @@
 @file:Suppress("unused", "RedundantSuppression")
 package com.nadzirakarimantika.dicodingevent.ui
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +28,6 @@ class EventAdapter(
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateEvents(newEvents: List<ListEventsItem>) {
         events = newEvents
         notifyDataSetChanged()

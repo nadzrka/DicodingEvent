@@ -38,17 +38,16 @@ class HomeViewModel : ViewModel() {
                     val responseBody = response.body()
                     eventList.value = responseBody?.listEvents?.filterNotNull() ?: emptyList()
                     if (eventList.value.isNullOrEmpty()) {
-                        _showToastMessage.value = "No events found"
+                        Log.e(tag, "onFailure: ${response.message()}")
                     }
                 } else {
-                    Log.e(tag, "onFailure: ${response.message()}")
+                    _showToastMessage.value = response.message()
                 }
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 _isLoading.value = false
                 _showToastMessage.value = "Failed to load events. Please try again."
-                Log.e(tag, "onFailure: ${t.message}")
             }
 
         })
