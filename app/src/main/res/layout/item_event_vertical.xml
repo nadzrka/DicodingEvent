@@ -16,7 +16,7 @@
 
         <ImageView
             android:id="@+id/img_item_photo"
-            android:src="@drawable/baseline_image_24"
+            tools:srcCompat="@tools:sample/avatars"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:contentDescription="@string/event_imagelogo"
