@@ -1,7 +1,7 @@
 package com.nadzirakarimantika.dicodingevent.data.retrofit
 
-import com.nadzirakarimantika.dicodingevent.data.response.DetailResponse
-import com.nadzirakarimantika.dicodingevent.data.response.EventResponse
+import com.nadzirakarimantika.dicodingevent.data.remote.response.DetailResponse
+import com.nadzirakarimantika.dicodingevent.data.remote.response.EventResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

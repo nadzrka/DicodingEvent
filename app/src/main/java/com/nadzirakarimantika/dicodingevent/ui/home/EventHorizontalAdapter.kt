@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
+import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.ItemEventHorizontalBinding
 
 class EventHorizontalAdapter(

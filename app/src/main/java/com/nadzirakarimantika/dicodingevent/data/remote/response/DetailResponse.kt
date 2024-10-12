@@ -1,6 +1,6 @@
 @file:Suppress("unused", "RedundantSuppression")
 
-package com.nadzirakarimantika.dicodingevent.data.response
+package com.nadzirakarimantika.dicodingevent.data.remote.response
 
 data class DetailResponse(
 	val error: Boolean? = null,

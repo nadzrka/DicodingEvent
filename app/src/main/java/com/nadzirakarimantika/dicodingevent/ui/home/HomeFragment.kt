@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
+import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentHomeBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
 

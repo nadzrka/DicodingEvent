@@ -11,18 +11,19 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
+import com.nadzirakarimantika.dicodingevent.data.FinishedEventRepository
+import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentFinishedBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
 import com.nadzirakarimantika.dicodingevent.ui.EventAdapter
+import com.nadzirakarimantika.dicodingevent.ui.ViewModelFactory
 
 class FinishedFragment : Fragment() {
 
     private var _binding: FragmentFinishedBinding? = null
     private val binding get() = _binding!!
-    private val finishedViewModel: FinishedViewModel by viewModels()
-
     private lateinit var eventAdapter: EventAdapter
+    private lateinit var finishedViewModel: FinishedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +47,11 @@ class FinishedFragment : Fragment() {
 
         setupSearchView()
 
+        // Set up ViewModel using ViewModelFactory
+        val factory = ViewModelFactory.getInstance(requireActivity())
+        finishedViewModel = viewModels<FinishedViewModel> { factory }.value
+
+        // Observe live data for the event list
         finishedViewModel.listEvents.observe(viewLifecycleOwner) { listEvents ->
             if (listEvents.isEmpty()) {
                 tvNoEvent.visibility = View.VISIBLE
@@ -57,24 +63,26 @@ class FinishedFragment : Fragment() {
             }
         }
 
-        finishedViewModel.isLoading.observe(viewLifecycleOwner){ isLoading ->
+        // Observe loading state
+        finishedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
+        // Observe toast messages
         finishedViewModel.showToastMessage.observe(viewLifecycleOwner) { message ->
-            if (message != null) {
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                finishedViewModel.clearToastMessage()
+            message?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         }
 
+        // Fetch events
         finishedViewModel.findFinishedEvent()
     }
 
     private fun setupSearchView() {
         val searchView = binding.searchView
+        searchView.visibility = View.VISIBLE
 
-        binding.searchView.visibility = View.VISIBLE
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (!query.isNullOrEmpty()) {

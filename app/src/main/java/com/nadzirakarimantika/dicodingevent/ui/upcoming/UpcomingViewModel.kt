@@ -6,8 +6,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nadzirakarimantika.dicodingevent.data.response.EventResponse
-import com.nadzirakarimantika.dicodingevent.data.response.ListEventsItem
+import com.nadzirakarimantika.dicodingevent.data.remote.response.EventResponse
+import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.data.retrofit.ApiConfig
 import retrofit2.Call
 import retrofit2.Callback
