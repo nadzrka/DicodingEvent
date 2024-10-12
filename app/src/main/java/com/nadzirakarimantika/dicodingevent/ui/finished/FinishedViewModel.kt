@@ -2,18 +2,14 @@
 
 package com.nadzirakarimantika.dicodingevent.ui.finished
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nadzirakarimantika.dicodingevent.data.FinishedEventRepository
 import com.nadzirakarimantika.dicodingevent.data.Result
-import com.nadzirakarimantika.dicodingevent.data.remote.response.EventResponse
 import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
-import com.nadzirakarimantika.dicodingevent.data.retrofit.ApiConfig
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 
 class FinishedViewModel(private val repository: FinishedEventRepository) : ViewModel() {
 
@@ -28,39 +24,38 @@ class FinishedViewModel(private val repository: FinishedEventRepository) : ViewM
 
     fun findFinishedEvent() {
         _isLoading.value = true
-        repository.getEvents(ApiConfig.getApiService().getFinishedEvent())
-            .observeForever { result ->
-                when (result) {
-                    is com.nadzirakarimantika.dicodingevent.data.Result.Loading -> {
-                        _isLoading.value = true
-                    }
-                    is Result.Success -> {
-                        _isLoading.value = false
-                        _listEvents.value = result.data // Assign the list of ListEventsItem
-                    }
-                    is Result.Error -> {
-                        _isLoading.value = false
-                    }
-                }
+        viewModelScope.launch {
+            repository.getEvents().observeForever { result ->
+                handleResult(result)
             }
+        }
     }
 
     fun searchFinishedEvents(query: String) {
         _isLoading.value = true
-        repository.getEvents(ApiConfig.getApiService().searchFinishedEvents(query))
-            .observeForever { result ->
-                when (result) {
-                    is Result.Loading -> {
-                        _isLoading.value = true
-                    }
-                    is Result.Success -> {
-                        _isLoading.value = false
-                        _listEvents.value = result.data
-                    }
-                    is Result.Error -> {
-                        _isLoading.value = false
-                    }
-                }
+        viewModelScope.launch {
+            repository.searchEvents(query).observeForever { result ->
+                handleResult(result)
             }
+        }
+    }
+
+    private fun handleResult(result: Result<List<ListEventsItem>>) {
+        when (result) {
+            is Result.Loading -> {
+                _isLoading.value = true
+            }
+            is Result.Success -> {
+                _isLoading.value = false
+                _listEvents.value = result.data
+            }
+            is Result.Error -> {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun clearToastMessage() {
+        _showToastMessage.value = null
     }
 }

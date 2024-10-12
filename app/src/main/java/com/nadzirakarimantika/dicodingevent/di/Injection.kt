@@ -3,7 +3,7 @@ package com.nadzirakarimantika.dicodingevent.di
 import android.content.Context
 import com.nadzirakarimantika.dicodingevent.data.FinishedEventRepository
 import com.nadzirakarimantika.dicodingevent.data.local.room.EventDatabase
-import com.nadzirakarimantika.dicodingevent.data.retrofit.ApiConfig
+import com.nadzirakarimantika.dicodingevent.data.remote.retrofit.ApiConfig
 import com.nadzirakarimantika.dicodingevent.utils.AppExecutors
 
 object Injection {

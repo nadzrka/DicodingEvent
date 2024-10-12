@@ -47,11 +47,9 @@ class FinishedFragment : Fragment() {
 
         setupSearchView()
 
-        // Set up ViewModel using ViewModelFactory
         val factory = ViewModelFactory.getInstance(requireActivity())
         finishedViewModel = viewModels<FinishedViewModel> { factory }.value
 
-        // Observe live data for the event list
         finishedViewModel.listEvents.observe(viewLifecycleOwner) { listEvents ->
             if (listEvents.isEmpty()) {
                 tvNoEvent.visibility = View.VISIBLE
@@ -63,19 +61,16 @@ class FinishedFragment : Fragment() {
             }
         }
 
-        // Observe loading state
         finishedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
-        // Observe toast messages
         finishedViewModel.showToastMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Fetch events
         finishedViewModel.findFinishedEvent()
     }
 

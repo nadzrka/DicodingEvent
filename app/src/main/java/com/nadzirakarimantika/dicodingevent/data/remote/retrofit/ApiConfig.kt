@@ -1,6 +1,6 @@
 @file:Suppress("unused", "RedundantSuppression")
 
-package com.nadzirakarimantika.dicodingevent.data.retrofit
+package com.nadzirakarimantika.dicodingevent.data.remote.retrofit
 
 import com.nadzirakarimantika.dicodingevent.BuildConfig.BASE_URL
 import okhttp3.OkHttpClient

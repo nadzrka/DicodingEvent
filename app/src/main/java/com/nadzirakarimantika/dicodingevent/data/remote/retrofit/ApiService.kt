@@ -1,4 +1,4 @@
-package com.nadzirakarimantika.dicodingevent.data.retrofit
+package com.nadzirakarimantika.dicodingevent.data.remote.retrofit
 
 import com.nadzirakarimantika.dicodingevent.data.remote.response.DetailResponse
 import com.nadzirakarimantika.dicodingevent.data.remote.response.EventResponse
