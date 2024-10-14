@@ -1,3 +1,5 @@
+@file:Suppress("unused", "RedundantSuppression")
+
 package com.nadzirakarimantika.dicodingevent.data.remote.retrofit
 
 import com.nadzirakarimantika.dicodingevent.data.remote.response.DetailResponse

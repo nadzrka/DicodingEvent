@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nadzirakarimantika.dicodingevent.data.Result
 import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentFinishedBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
@@ -35,7 +36,6 @@ class FinishedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val tvNoEvent = binding.tvNoEvent
 
         eventAdapter = EventAdapter { event ->
             navigateToDetailEvent(event)
@@ -49,47 +49,90 @@ class FinishedFragment : Fragment() {
         val factory = ViewModelFactory.getInstance(requireActivity())
         finishedViewModel = viewModels<FinishedViewModel> { factory }.value
 
-        finishedViewModel.listEvents.observe(viewLifecycleOwner) { listEvents ->
-            if (listEvents.isEmpty()) {
-                tvNoEvent.visibility = View.VISIBLE
-                binding.rvEvent.visibility = View.GONE
-            } else {
-                tvNoEvent.visibility = View.GONE
-                binding.rvEvent.visibility = View.VISIBLE
-                eventAdapter.submitList(listEvents)
+        finishedViewModel.findFinishedEvent().observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.tvNoEvent.visibility = View.GONE
+                }
+
+                is Result.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    val eventData = result.data
+                    if (eventData.isEmpty()) {
+                        binding.tvNoEvent.visibility = View.VISIBLE
+                        binding.rvEvent.visibility = View.GONE
+                    } else {
+                        binding.tvNoEvent.visibility = View.GONE
+                        binding.rvEvent.visibility = View.VISIBLE
+                        eventAdapter.submitList(eventData)
+                    }
+                }
+
+                is Result.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.tvNoEvent.visibility = View.VISIBLE
+                    binding.rvEvent.visibility = View.GONE
+                    Toast.makeText(
+                        context,
+                        result.error,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
-
-        finishedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
-
-        finishedViewModel.showToastMessage.observe(viewLifecycleOwner) { message ->
-            message?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-            }
-        }
-
         finishedViewModel.findFinishedEvent()
+    }
+
+    private fun observeSearchFinishedEvents(query: String) {
+        finishedViewModel.searchFinishedEvents(query).observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.tvNoEvent.visibility = View.GONE
+                }
+                is Result.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    val eventData = result.data
+                    if (eventData.isEmpty()) {
+                        binding.tvNoEvent.visibility = View.VISIBLE
+                        binding.rvEvent.visibility = View.GONE
+                    } else {
+                        binding.tvNoEvent.visibility = View.GONE
+                        binding.rvEvent.visibility = View.VISIBLE
+                        eventAdapter.submitList(eventData)
+                    }
+                }
+                is Result.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.tvNoEvent.visibility = View.VISIBLE
+                    binding.rvEvent.visibility = View.GONE
+                    Toast.makeText(
+                        context,
+                        result.error,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 
     private fun setupSearchView() {
         val searchView = binding.searchView
         searchView.visibility = View.VISIBLE
-
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (!query.isNullOrEmpty()) {
-                    finishedViewModel.searchFinishedEvents(query)
+                    observeSearchFinishedEvents(query)
                 } else {
-                    finishedViewModel.findFinishedEvent()
+                    observeSearchFinishedEvents("")
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText.isNullOrEmpty()) {
-                    finishedViewModel.findFinishedEvent()
+                    observeSearchFinishedEvents("")
                 }
                 return true
             }

@@ -13,11 +13,9 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nadzirakarimantika.dicodingevent.data.Result
 import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
-import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentHomeBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
 import com.nadzirakarimantika.dicodingevent.ui.ViewModelFactory
-import com.nadzirakarimantika.dicodingevent.ui.finished.FinishedViewModel
 
 class HomeFragment : Fragment() {
 
