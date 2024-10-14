@@ -1,3 +1,5 @@
+@file:Suppress("unused", "RedundantSuppression")
+
 package com.nadzirakarimantika.dicodingevent.data
 
 import androidx.lifecycle.LiveData
@@ -25,41 +27,35 @@ class FinishedEventRepository private constructor(
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
                 if (response.isSuccessful) {
-                    val events = response.body()?.listEvents
-                    val eventList = ArrayList<EventEntity>()
+                    val events = response.body()?.listEvents ?: emptyList()
 
                     appExecutors.diskIO.execute {
-                        events?.forEach { anEvent ->
-                            val isBookmarked = eventDao.isEventBookmarked(anEvent.name)
-                            anEvent.link?.let { link ->
-                                val eventEntity = EventEntity(
-                                    name = anEvent.name,
-                                    beginTime = anEvent.beginTime,
-                                    imageLogo = anEvent.imageLogo,
-                                    summary = anEvent.summary,
-                                    mediaCover = anEvent.mediaCover,
-                                    registrants = anEvent.registrants,
-                                    link = link,
-                                    description = anEvent.description,
-                                    ownerName = anEvent.ownerName,
-                                    cityName = anEvent.cityName,
-                                    quota = anEvent.quota,
-                                    id = anEvent.id,
-                                    endTime = anEvent.endTime,
-                                    category = anEvent.category,
-                                    isBookmarked = isBookmarked
-                                )
-                                eventList.add(eventEntity)  // Add only non-null eventEntity
-                            }
+                        val eventList = events.map { anEvent ->
+                            EventEntity(
+                                name = anEvent.name,
+                                beginTime = anEvent.beginTime,
+                                imageLogo = anEvent.imageLogo,
+                                summary = anEvent.summary,
+                                mediaCover = anEvent.mediaCover,
+                                registrants = anEvent.registrants,
+                                link = anEvent.link ?: "",
+                                description = anEvent.description,
+                                ownerName = anEvent.ownerName,
+                                cityName = anEvent.cityName,
+                                quota = anEvent.quota,
+                                id = anEvent.id,
+                                endTime = anEvent.endTime,
+                                category = anEvent.category,
+                                isBookmarked = eventDao.isEventBookmarked(anEvent.name)
+                            )
                         }
+
                         eventDao.deleteAll()
                         eventDao.insertEvent(eventList)
-
-                        // Post success result after inserting events
-                        result.postValue(Result.Success(eventList.map { it.toListEventsItem() }))
                     }
+                    result.postValue(Result.Success(events))
                 } else {
-                    result.postValue(Result.Error("Error fetching events"))
+                    result.postValue(Result.Error("Error: ${response.message()}"))
                 }
             }
 
@@ -68,19 +64,29 @@ class FinishedEventRepository private constructor(
             }
         })
 
+        val localData = eventDao.getEvent()
+        result.addSource(localData) { newData: List<EventEntity> ->
+            result.value = Result.Success(newData.map { it.toListEventsItem() })
+        }
+
         return result
     }
 
     fun searchEvents(query: String): LiveData<Result<List<ListEventsItem>>> {
         val resultLiveData = MediatorLiveData<Result<List<ListEventsItem>>>()
         resultLiveData.value = Result.Loading
-        val searchResults = eventDao.searchEvents("%$query%")
 
-        searchResults.observeForever { events ->
+        val searchResults = if (query.isEmpty()) {
+            eventDao.getEvent()
+        } else {
+            eventDao.searchEvents("%$query%")
+        }
+
+        resultLiveData.addSource(searchResults) { events ->
             if (events.isNotEmpty()) {
-                resultLiveData.postValue(Result.Success(events.map { it.toListEventsItem() }))
+                resultLiveData.value = Result.Success(events.map { it.toListEventsItem() })
             } else {
-                resultLiveData.postValue(Result.Error("No events found"))
+                resultLiveData.value = Result.Error("No events found")
             }
         }
 

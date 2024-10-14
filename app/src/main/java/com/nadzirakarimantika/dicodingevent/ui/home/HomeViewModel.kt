@@ -36,7 +36,7 @@ class HomeViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-                    eventList.value = responseBody?.listEvents?.filterNotNull() ?: emptyList()
+                    eventList.value = responseBody?.listEvents ?: emptyList()
                     if (eventList.value.isNullOrEmpty()) {
                         Log.e(tag, "onFailure: ${response.message()}")
                     }

@@ -1,3 +1,5 @@
+@file:Suppress("unused", "RedundantSuppression")
+
 package com.nadzirakarimantika.dicodingevent.data.local.room
 
 import androidx.lifecycle.LiveData
@@ -6,7 +8,7 @@ import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
 
 @Dao
 interface EventDao {
-    @Query("SELECT * FROM event ORDER BY beginTime DESC")
+    @Query("SELECT * FROM event")
     fun getEvent(): LiveData<List<EventEntity>>
 
     @Query("SELECT * FROM event where bookmarked = 1")

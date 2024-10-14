@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.nadzirakarimantika.dicodingevent.utils
 
 import android.os.Handler

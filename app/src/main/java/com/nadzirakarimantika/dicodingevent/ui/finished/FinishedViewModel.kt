@@ -22,6 +22,9 @@ class FinishedViewModel(private val repository: FinishedEventRepository) : ViewM
     private val _showToastMessage = MutableLiveData<String?>()
     val showToastMessage: LiveData<String?> = _showToastMessage
 
+    private val _noEventFound = MutableLiveData<Boolean>()
+    val noEventFound: LiveData<Boolean> = _noEventFound
+
     fun findFinishedEvent() {
         _isLoading.value = true
         viewModelScope.launch {
@@ -47,10 +50,12 @@ class FinishedViewModel(private val repository: FinishedEventRepository) : ViewM
             }
             is Result.Success -> {
                 _isLoading.value = false
+                _noEventFound.value = false
                 _listEvents.value = result.data
             }
             is Result.Error -> {
                 _isLoading.value = false
+                _noEventFound.value = true
             }
         }
     }

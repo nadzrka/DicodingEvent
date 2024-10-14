@@ -38,7 +38,7 @@ class UpcomingFragment : Fragment() {
         val tvNoEvent = binding.tvNoEvent
         val rvUpcoming = binding.rvEvent
 
-        eventAdapter = EventAdapter(mutableListOf()) { event ->
+        eventAdapter = EventAdapter { event ->
             navigateToDetailEvent(event)
         }
 
@@ -54,7 +54,7 @@ class UpcomingFragment : Fragment() {
             } else {
                 tvNoEvent.visibility = View.GONE
                 rvUpcoming.visibility = View.VISIBLE
-                eventAdapter.updateEvents(listEvents)
+                eventAdapter.submitList(listEvents)
             }
         }
 

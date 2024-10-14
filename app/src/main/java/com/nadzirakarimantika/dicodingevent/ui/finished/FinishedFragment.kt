@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nadzirakarimantika.dicodingevent.data.FinishedEventRepository
 import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentFinishedBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
@@ -23,7 +22,7 @@ class FinishedFragment : Fragment() {
     private var _binding: FragmentFinishedBinding? = null
     private val binding get() = _binding!!
     private lateinit var eventAdapter: EventAdapter
-    private lateinit var finishedViewModel: FinishedViewModel
+    private val finishedViewModel: FinishedViewModel by viewModels { ViewModelFactory.getInstance(requireActivity()) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,29 +35,20 @@ class FinishedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val tvNoEvent = binding.tvNoEvent
 
-        eventAdapter = EventAdapter(mutableListOf()) { event ->
-            navigateToDetailEvent(event)
-        }
-
+        eventAdapter = EventAdapter { event -> navigateToDetailEvent(event) }
         binding.rvEvent.layoutManager = LinearLayoutManager(requireContext())
         binding.rvEvent.adapter = eventAdapter
 
         setupSearchView()
 
-        val factory = ViewModelFactory.getInstance(requireActivity())
-        finishedViewModel = viewModels<FinishedViewModel> { factory }.value
-
         finishedViewModel.listEvents.observe(viewLifecycleOwner) { listEvents ->
-            if (listEvents.isEmpty()) {
-                tvNoEvent.visibility = View.VISIBLE
-                binding.rvEvent.visibility = View.GONE
-            } else {
-                tvNoEvent.visibility = View.GONE
-                binding.rvEvent.visibility = View.VISIBLE
-                eventAdapter.updateEvents(listEvents)
-            }
+            eventAdapter.submitList(listEvents)
+        }
+
+        finishedViewModel.noEventFound.observe(viewLifecycleOwner) { noEventFound ->
+            binding.tvNoEvent.visibility = if (noEventFound) View.VISIBLE else View.GONE
+            binding.rvEvent.visibility = if (noEventFound) View.GONE else View.VISIBLE
         }
 
         finishedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->

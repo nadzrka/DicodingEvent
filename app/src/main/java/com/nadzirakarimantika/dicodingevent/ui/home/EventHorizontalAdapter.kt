@@ -19,7 +19,7 @@ class EventHorizontalAdapter(
 
         fun bind(event: ListEventsItem) {
             binding.eventTitle.text =  HtmlCompat.fromHtml(
-                event.name.toString(),
+                event.name,
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             Glide.with(itemView.context)

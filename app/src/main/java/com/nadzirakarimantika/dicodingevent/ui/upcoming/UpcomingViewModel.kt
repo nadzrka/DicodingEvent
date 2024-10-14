@@ -33,7 +33,7 @@ class UpcomingViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-                    eventList.value = responseBody?.listEvents?.filterNotNull() ?: emptyList()
+                    eventList.value = responseBody?.listEvents ?: emptyList()
                     if (eventList.value.isNullOrEmpty()){
                         _showToastMessage.value = "No events found"
                     }

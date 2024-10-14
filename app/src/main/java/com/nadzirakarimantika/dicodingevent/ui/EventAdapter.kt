@@ -3,17 +3,32 @@ package com.nadzirakarimantika.dicodingevent.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.ItemRowEventBinding
 
 class EventAdapter(
-    private var events: List<ListEventsItem>,
     private val onItemClick: (ListEventsItem) -> Unit
-) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
+) : ListAdapter<ListEventsItem, EventAdapter.EventViewHolder>(DIFF_CALLBACK) {
 
-    inner class EventViewHolder(private val binding: ItemRowEventBinding) : RecyclerView.ViewHolder(binding.root) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+        val binding = ItemRowEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return EventViewHolder(binding, onItemClick)
+    }
+
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+        val event = getItem(position)
+        holder.bind(event)
+    }
+
+    class EventViewHolder(
+        private val binding: ItemRowEventBinding,
+        private val onItemClick: (ListEventsItem) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(event: ListEventsItem) {
             binding.tvItemName.text = event.name
 
@@ -21,26 +36,22 @@ class EventAdapter(
                 .load(event.mediaCover)
                 .into(binding.imgItemPhoto)
 
-            // Set the click listener
             itemView.setOnClickListener {
                 onItemClick(event)
             }
         }
     }
 
-    fun updateEvents(newEvents: List<ListEventsItem>) {
-        events = newEvents
-        notifyDataSetChanged()
-    }
+    companion object {
+        val DIFF_CALLBACK: DiffUtil.ItemCallback<ListEventsItem> =
+            object : DiffUtil.ItemCallback<ListEventsItem>() {
+                override fun areItemsTheSame(oldItem: ListEventsItem, newItem: ListEventsItem): Boolean {
+                    return oldItem.id == newItem.id
+                }
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): EventViewHolder {
-        val binding = ItemRowEventBinding.inflate(LayoutInflater.from(p0.context), p0, false)
-        return EventViewHolder(binding)
+                override fun areContentsTheSame(oldItem: ListEventsItem, newItem: ListEventsItem): Boolean {
+                    return oldItem == newItem
+                }
+            }
     }
-
-    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        holder.bind(events[position])
-    }
-
-    override fun getItemCount(): Int = events.size
 }
