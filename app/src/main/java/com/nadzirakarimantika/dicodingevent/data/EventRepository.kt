@@ -2,11 +2,17 @@
 
 package com.nadzirakarimantika.dicodingevent.data
 
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
 import com.nadzirakarimantika.dicodingevent.data.local.room.EventDao
+import com.nadzirakarimantika.dicodingevent.data.remote.response.DetailResponse
+import com.nadzirakarimantika.dicodingevent.data.remote.response.Event
 import com.nadzirakarimantika.dicodingevent.data.remote.response.EventResponse
+import com.nadzirakarimantika.dicodingevent.data.remote.retrofit.ApiConfig
 import com.nadzirakarimantika.dicodingevent.data.remote.retrofit.ApiService
 import com.nadzirakarimantika.dicodingevent.utils.AppExecutors
 import retrofit2.Call
@@ -18,6 +24,13 @@ class EventRepository private constructor(
     private val eventDao: EventDao,
     private val appExecutors: AppExecutors
 ) {
+    private val _showToastMessage = MutableLiveData<String>()
+    val showToastMessage: LiveData<String> get() = _showToastMessage
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+    private val _detailEvent = MutableLiveData<Result<Event>>()
 
     fun getFinishedEvents(): LiveData<Result<List<EventEntity>>> {
         val result = MediatorLiveData<Result<List<EventEntity>>>()
@@ -127,25 +140,62 @@ class EventRepository private constructor(
         return result
     }
 
-    fun searchFinishedEvents(query: String): LiveData<Result<List<EventEntity>>> {
-        val result = MediatorLiveData<Result<List<EventEntity>>>()
-        result.value = Result.Loading
+    fun findEvent(eventId: String): LiveData<Result<Event>> {
+        _isLoading.value = true
 
-        val searchResults = if (query.isEmpty()) {
-            eventDao.getFinishedEvent()
-        } else {
-            eventDao.searchEvents("%$query%")
-        }
-
-        result.addSource(searchResults) { events ->
-            if (events.isNotEmpty()) {
-                result.value = Result.Success(events)
+        val eventData = MediatorLiveData<Result<Event>>()
+        val localData = eventDao.getEventById(eventId)
+        eventData.addSource(localData) { eventEntity ->
+            if (eventEntity != null) {
+                val event = mapEventEntityToEvent(eventEntity)
+                eventData.value = Result.Success(event)
             } else {
-                result.value = Result.Error("No events found")
+                eventData.value = Result.Error("Event not found in local database.")
             }
         }
 
-        return result
+        val client = apiService.getDetailEvent(eventId)
+        client.enqueue(object : Callback<DetailResponse> {
+            override fun onResponse(call: Call<DetailResponse>, response: Response<DetailResponse>) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    val event = responseBody?.event
+                    if (event != null) {
+                        eventData.value = Result.Success(event)
+                    } else {
+                        eventData.value = Result.Error("Event data is null.")
+                    }
+                } else {
+                    eventData.value = Result.Error("Failed to fetch event: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<DetailResponse>, t: Throwable) {
+                _isLoading.value = false
+                Log.e("EventRepository", "onFailure: ${t.message}")
+                eventData.value = Result.Error("Failed to load event. Please try again.")
+            }
+        })
+
+        return eventData
+    }
+
+    private fun mapEventEntityToEvent(entity: EventEntity): Event {
+        return Event(
+            id = entity.id,
+            name = entity.name,
+            description = entity.description,
+            category = entity.category,
+            ownerName = entity.ownerName,
+            cityName = entity.cityName,
+            summary = entity.summary,
+            quota = entity.quota,
+            registrants = entity.registrants,
+            beginTime = entity.beginTime,
+            mediaCover = entity.mediaCover,
+            link = entity.link
+        )
     }
 
     fun searchUpcomingEvents(query: String): LiveData<Result<List<EventEntity>>> {
@@ -169,6 +219,30 @@ class EventRepository private constructor(
         return result
     }
 
+    fun searchFinishedEvents(query: String): LiveData<Result<List<EventEntity>>> {
+        val result = MediatorLiveData<Result<List<EventEntity>>>()
+        result.value = Result.Loading
+
+        val searchResults = if (query.isEmpty()) {
+            eventDao.getFinishedEvent()
+        } else {
+            eventDao.searchEvents("%$query%")
+        }
+
+        result.addSource(searchResults) { events ->
+            if (events.isNotEmpty()) {
+                result.value = Result.Success(events)
+            } else {
+                result.value = Result.Error("No events found")
+            }
+        }
+
+        return result
+    }
+
+
+
+    // Singleton pattern
     companion object {
         @Volatile
         private var instance: EventRepository? = null

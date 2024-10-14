@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.nadzirakarimantika.dicodingevent.data.EventRepository
 import com.nadzirakarimantika.dicodingevent.di.Injection
 import com.nadzirakarimantika.dicodingevent.ui.finished.FinishedViewModel
+import com.nadzirakarimantika.dicodingevent.ui.home.HomeViewModel
 import com.nadzirakarimantika.dicodingevent.ui.upcoming.UpcomingViewModel
 
 class ViewModelFactory private constructor(
@@ -23,6 +24,14 @@ class ViewModelFactory private constructor(
 
             modelClass.isAssignableFrom(UpcomingViewModel::class.java) -> {
                 UpcomingViewModel(eventRepository) as T
+            }
+
+            modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
+                HomeViewModel(eventRepository) as T
+            }
+
+            modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
+                DetailViewModel() as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

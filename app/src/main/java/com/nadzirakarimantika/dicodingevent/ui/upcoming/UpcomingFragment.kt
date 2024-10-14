@@ -63,7 +63,7 @@ class UpcomingFragment : Fragment() {
                         binding.progressBar.visibility = View.GONE
                         Toast.makeText(
                             context,
-                            "Terjadi kesalahan" + result.error,
+                            result.error,
                             Toast.LENGTH_SHORT
                         ).show()
                     }

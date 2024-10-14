@@ -2,22 +2,37 @@
 
 package com.nadzirakarimantika.dicodingevent.ui.home
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
+import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
 import com.nadzirakarimantika.dicodingevent.databinding.ItemEventHorizontalBinding
 
 class EventHorizontalAdapter(
-    private var events: List<ListEventsItem>,
-    private val onItemClick: (ListEventsItem) -> Unit
-) : RecyclerView.Adapter<EventHorizontalAdapter.EventViewHolder>() {
+    private val onItemClick: (EventEntity) -> Unit
+) : ListAdapter<EventEntity, EventHorizontalAdapter.EventViewHolder>(DIFF_CALLBACK) {
 
-    inner class EventViewHolder(private val binding: ItemEventHorizontalBinding, val onItemClick: (ListEventsItem) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+        val binding = ItemEventHorizontalBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return EventViewHolder(binding, onItemClick)
+    }
 
-        fun bind(event: ListEventsItem) {
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+        val event = getItem(position)
+        holder.bind(event)
+    }
+
+    class EventViewHolder(
+        private val binding: ItemEventHorizontalBinding,
+        private val onItemClick: (EventEntity) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(event: EventEntity) {
             binding.eventTitle.text =  HtmlCompat.fromHtml(
                 event.name,
                 HtmlCompat.FROM_HTML_MODE_LEGACY
@@ -32,21 +47,20 @@ class EventHorizontalAdapter(
         }
     }
 
-    fun updateEvents(newEvents: List<ListEventsItem>?) {
-        events = newEvents ?: emptyList()
-        notifyDataSetChanged()
-    }
+    override fun getItemCount(): Int = currentList.take(5).size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-        val binding = ItemEventHorizontalBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return EventViewHolder(binding, onItemClick)
-    }
+    companion object {
+        val DIFF_CALLBACK: DiffUtil.ItemCallback<EventEntity> =
+            object : DiffUtil.ItemCallback<EventEntity>() {
+                override fun areItemsTheSame(oldItem: EventEntity, newItem: EventEntity): Boolean {
+                    return oldItem.id == newItem.id
+                }
 
-    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val event = events[position]
-        holder.bind(event)
+                @SuppressLint("DiffUtilEquals")
+                override fun areContentsTheSame(oldItem: EventEntity, newItem: EventEntity): Boolean {
+                    return oldItem == newItem
+                }
+            }
     }
-
-    override fun getItemCount(): Int = events.take(5).size
 
 }

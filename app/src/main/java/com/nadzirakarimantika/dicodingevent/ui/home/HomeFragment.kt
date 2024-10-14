@@ -11,9 +11,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nadzirakarimantika.dicodingevent.data.Result
+import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
 import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentHomeBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
+import com.nadzirakarimantika.dicodingevent.ui.ViewModelFactory
+import com.nadzirakarimantika.dicodingevent.ui.finished.FinishedViewModel
 
 class HomeFragment : Fragment() {
 
@@ -32,10 +36,10 @@ class HomeFragment : Fragment() {
 
         binding.rvUpcoming.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        eventHorizontalAdapter = EventHorizontalAdapter(emptyList()) { event -> navigateToDetailEvent(event) }
+        eventHorizontalAdapter = EventHorizontalAdapter { event -> navigateToDetailEvent(event) }
         binding.rvUpcoming.adapter = eventHorizontalAdapter
 
-        eventVerticalAdapter = EventVerticalAdapter(emptyList()) { event -> navigateToDetailEvent(event) }
+        eventVerticalAdapter = EventVerticalAdapter { event -> navigateToDetailEvent(event) }
         binding.rvEvent.adapter = eventVerticalAdapter
 
         setupSearchView()
@@ -46,48 +50,65 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val tvNoEvent = binding.tvNoEvent
-        val tvNoEvent2 = binding.tvNoEvent2
-        val rvEvent = binding.rvEvent
-        val rvUpcoming = binding.rvUpcoming
+        val factory: ViewModelFactory = ViewModelFactory.getInstance(requireActivity())
+        val viewModel: HomeViewModel by viewModels {
+            factory
+        }
 
-        homeViewModel.listFinishedEvents.observe(viewLifecycleOwner) { listEvents ->
-            if (listEvents.isEmpty()) {
-                tvNoEvent.visibility = View.VISIBLE
-                tvNoEvent2.visibility = View.VISIBLE
-                rvEvent.visibility = View.GONE
-            } else {
-                tvNoEvent.visibility = View.GONE
-                rvEvent.visibility = View.VISIBLE
-                eventVerticalAdapter.updateEvents(listEvents)
+        viewModel.getFinishedEvents().observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.tvNoEvent.visibility = View.GONE
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.tvNoEvent.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
+                        val eventData = result.data
+                        eventVerticalAdapter.submitList(eventData)
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        binding.tvNoEvent.visibility = View.GONE
+                        Toast.makeText(
+                            context,
+                            result.error,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
         }
 
-        homeViewModel.listUpcomingEvents.observe(viewLifecycleOwner) { listEvents ->
-            if (listEvents.isEmpty()) {
-                tvNoEvent.visibility = View.VISIBLE
-                rvUpcoming.visibility = View.GONE
-                tvNoEvent2.visibility = View.VISIBLE
-            } else {
-                tvNoEvent.visibility = View.GONE
-                rvUpcoming.visibility = View.VISIBLE
-                eventHorizontalAdapter.updateEvents(listEvents)
+        viewModel.getUpcomingEvents().observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.tvNoEvent.visibility = View.GONE
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.tvNoEvent.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
+                        val eventData = result.data
+                        eventHorizontalAdapter.submitList(eventData)
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        binding.tvNoEvent.visibility = View.GONE
+                        Toast.makeText(
+                            context,
+                            result.error,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
         }
 
-        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
-
-        homeViewModel.showToastMessage.observe(viewLifecycleOwner) { message ->
-            if (message != null) {
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                homeViewModel.clearToastMessage()
-            }
-        }
-
-        homeViewModel.findFinishedEvent()
-        homeViewModel.findUpcomingEvent()
+        homeViewModel.getUpcomingEvents()
+        homeViewModel.getFinishedEvents()
     }
 
     private fun setupSearchView() {
@@ -99,22 +120,22 @@ class HomeFragment : Fragment() {
                     homeViewModel.searchUpcomingEvents(query)
                     homeViewModel.searchFinishedEvents(query)
                 } else {
-                    homeViewModel.findUpcomingEvent()
-                    homeViewModel.findFinishedEvent()
+                    homeViewModel.getUpcomingEvents()
+                    homeViewModel.getFinishedEvents()
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText.isNullOrEmpty()) {
-                    homeViewModel.findFinishedEvent()
-                    homeViewModel.findUpcomingEvent()
+                    homeViewModel.getFinishedEvents()
+                    homeViewModel.getUpcomingEvents()
                 }
                 return true
             }
         })
     }
-    private fun navigateToDetailEvent(event: ListEventsItem) {
+    private fun navigateToDetailEvent(event: EventEntity) {
         val intent = Intent(requireContext(), DetailActivity::class.java).apply {
             putExtra(DetailActivity.EXTRA_EVENT_ID, event.id.toString())
         }

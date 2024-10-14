@@ -35,6 +35,9 @@ interface EventDao {
     @Query("DELETE FROM event WHERE status = 0")
     fun deleteFinishedEvents()
 
+    @Query("SELECT * FROM event WHERE id = :eventId")
+    fun getEventById(eventId: String): LiveData<EventEntity>
+
     @Query("SELECT EXISTS(SELECT * FROM event WHERE name = :title AND bookmarked = 1)")
     fun isEventBookmarked(title: String): Boolean
 }
