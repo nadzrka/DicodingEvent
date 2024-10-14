@@ -2,63 +2,11 @@
 
 package com.nadzirakarimantika.dicodingevent.ui.upcoming
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nadzirakarimantika.dicodingevent.data.remote.response.EventResponse
-import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
-import com.nadzirakarimantika.dicodingevent.data.remote.retrofit.ApiConfig
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.nadzirakarimantika.dicodingevent.data.EventRepository
 
-class UpcomingViewModel : ViewModel() {
+class UpcomingViewModel(private val eventRepository: EventRepository) : ViewModel() {
 
-    private val _listEvents = MutableLiveData<List<ListEventsItem>>()
-    val listEvents: LiveData<List<ListEventsItem>> get() = _listEvents
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
-
-    private val _showToastMessage = MutableLiveData<String?>()
-    val showToastMessage: LiveData<String?> get() = _showToastMessage
-
-    private val tag = "FinishedViewModel"
-
-    private fun fetchEvents(apiCall: Call<EventResponse>, eventList: MutableLiveData<List<ListEventsItem>>) {
-        _isLoading.value = true
-        apiCall.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                _isLoading.value = false
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    eventList.value = responseBody?.listEvents ?: emptyList()
-                    if (eventList.value.isNullOrEmpty()){
-                        _showToastMessage.value = "No events found"
-                    }
-                } else {
-                    _showToastMessage.value = response.message()
-                }
-            }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                _isLoading.value = false
-                Log.e(tag, "onFailure: ${t.message}")
-                _showToastMessage.value = "Failed to load events. Please try again."
-            }
-        })
-    }
-
-    fun findUpcomingEvents() {
-        fetchEvents(ApiConfig.getApiService().getUpcomingEvent(), _listEvents)
-    }
-
-    fun searchUpcomingEvents(query: String) {
-        fetchEvents(ApiConfig.getApiService().searchUpcomingEvents(query), _listEvents)
-    }
-
-    fun clearToastMessage() {
-        _showToastMessage.value = null
-    }
+    fun findUpcomingEvents() = eventRepository.getUpcomingEvents()
+    fun searchFinishedEvents(query: String) = eventRepository.searchUpcomingEvents(query)
 }

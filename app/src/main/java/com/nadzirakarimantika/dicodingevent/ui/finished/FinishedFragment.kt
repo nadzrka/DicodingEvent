@@ -11,7 +11,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
+import com.nadzirakarimantika.dicodingevent.data.Result
+import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentFinishedBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
 import com.nadzirakarimantika.dicodingevent.ui.EventAdapter
@@ -36,58 +37,69 @@ class FinishedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        eventAdapter = EventAdapter { event -> navigateToDetailEvent(event) }
+        val factory: ViewModelFactory = ViewModelFactory.getInstance(requireActivity())
+        val viewModel: FinishedViewModel by viewModels {
+            factory
+        }
+
+        eventAdapter = EventAdapter { event -> navigateToDetailEvent(event)}
         binding.rvEvent.layoutManager = LinearLayoutManager(requireContext())
         binding.rvEvent.adapter = eventAdapter
 
         setupSearchView()
 
-        finishedViewModel.listEvents.observe(viewLifecycleOwner) { listEvents ->
-            eventAdapter.submitList(listEvents)
-        }
-
-        finishedViewModel.noEventFound.observe(viewLifecycleOwner) { noEventFound ->
-            binding.tvNoEvent.visibility = if (noEventFound) View.VISIBLE else View.GONE
-            binding.rvEvent.visibility = if (noEventFound) View.GONE else View.VISIBLE
-        }
-
-        finishedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
-
-        finishedViewModel.showToastMessage.observe(viewLifecycleOwner) { message ->
-            message?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+        viewModel.getFinishedEvents().observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.tvNoEvent.visibility = View.GONE
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.tvNoEvent.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
+                        val eventData = result.data
+                        eventAdapter.submitList(eventData)
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        binding.tvNoEvent.visibility = View.VISIBLE
+                        Toast.makeText(
+                            context,
+                            "Terjadi kesalahan" + result.error,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
         }
 
-        finishedViewModel.findFinishedEvent()
+        finishedViewModel.getFinishedEvents()
     }
 
     private fun setupSearchView() {
         val searchView = binding.searchView
         searchView.visibility = View.VISIBLE
-
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (!query.isNullOrEmpty()) {
-                    finishedViewModel.searchFinishedEvents(query)
+                    finishedViewModel.searchEvents(query)
                 } else {
-                    finishedViewModel.findFinishedEvent()
+                    finishedViewModel.getFinishedEvents()
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText.isNullOrEmpty()) {
-                    finishedViewModel.findFinishedEvent()
+                    finishedViewModel.getFinishedEvents()
                 }
                 return true
             }
         })
     }
 
-    private fun navigateToDetailEvent(event: ListEventsItem) {
+    private fun navigateToDetailEvent(event: EventEntity) {
         val intent = Intent(requireContext(), DetailActivity::class.java).apply {
             putExtra(DetailActivity.EXTRA_EVENT_ID, event.id.toString())
         }

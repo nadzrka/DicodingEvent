@@ -11,17 +11,18 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nadzirakarimantika.dicodingevent.data.remote.response.ListEventsItem
+import com.nadzirakarimantika.dicodingevent.data.Result
+import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentUpcomingBinding
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
 import com.nadzirakarimantika.dicodingevent.ui.EventAdapter
+import com.nadzirakarimantika.dicodingevent.ui.ViewModelFactory
 
 class UpcomingFragment : Fragment() {
 
     private var _binding: FragmentUpcomingBinding? = null
     private val binding get() = _binding!!
-    private val upcomingViewModel: UpcomingViewModel by viewModels()
-
+    private val upcomingViewModel: UpcomingViewModel by viewModels { ViewModelFactory.getInstance(requireActivity()) }
     private lateinit var eventAdapter: EventAdapter
 
     override fun onCreateView(
@@ -35,37 +36,38 @@ class UpcomingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val tvNoEvent = binding.tvNoEvent
-        val rvUpcoming = binding.rvEvent
 
-        eventAdapter = EventAdapter { event ->
-            navigateToDetailEvent(event)
+        val factory: ViewModelFactory = ViewModelFactory.getInstance(requireActivity())
+        val viewModel: UpcomingViewModel by viewModels {
+            factory
         }
 
+        eventAdapter = EventAdapter { event -> navigateToDetailEvent(event)}
         binding.rvEvent.layoutManager = LinearLayoutManager(requireContext())
         binding.rvEvent.adapter = eventAdapter
 
         setupSearchView()
 
-        upcomingViewModel.listEvents.observe(viewLifecycleOwner) { listEvents ->
-            if (listEvents.isEmpty()) {
-                tvNoEvent.visibility = View.VISIBLE
-                rvUpcoming.visibility = View.GONE
-            } else {
-                tvNoEvent.visibility = View.GONE
-                rvUpcoming.visibility = View.VISIBLE
-                eventAdapter.submitList(listEvents)
-            }
-        }
-
-        upcomingViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
-
-        upcomingViewModel.showToastMessage.observe(viewLifecycleOwner) { message ->
-            if (message != null) {
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                upcomingViewModel.clearToastMessage()
+        viewModel.findUpcomingEvents().observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        val eventData = result.data
+                        eventAdapter.submitList(eventData)
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(
+                            context,
+                            "Terjadi kesalahan" + result.error,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
         }
 
@@ -74,12 +76,11 @@ class UpcomingFragment : Fragment() {
 
     private fun setupSearchView() {
         val searchView = binding.searchView
-
         searchView.visibility = View.VISIBLE
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (!query.isNullOrEmpty()) {
-                    upcomingViewModel.searchUpcomingEvents(query)
+                    upcomingViewModel.searchFinishedEvents(query)
                 } else {
                     upcomingViewModel.findUpcomingEvents()
                 }
@@ -95,7 +96,7 @@ class UpcomingFragment : Fragment() {
         })
     }
 
-    private fun navigateToDetailEvent(event: ListEventsItem) {
+    private fun navigateToDetailEvent(event: EventEntity) {
         val intent = Intent(requireContext(), DetailActivity::class.java).apply {
             putExtra(DetailActivity.EXTRA_EVENT_ID, event.id.toString())
         }

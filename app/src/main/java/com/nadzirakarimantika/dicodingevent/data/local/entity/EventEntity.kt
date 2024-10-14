@@ -52,5 +52,8 @@ class EventEntity(
     val category: String,
 
     @field:ColumnInfo(name = "bookmarked")
-    var isBookmarked: Boolean
+    var isBookmarked: Boolean,
+
+    @field:ColumnInfo(name = "status")
+    var isActive: Boolean
 )

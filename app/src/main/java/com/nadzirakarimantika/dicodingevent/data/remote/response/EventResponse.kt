@@ -31,7 +31,7 @@ data class ListEventsItem(
 	val imageLogo: String,
 
 	@field:SerializedName("link")
-	val link: String? = null,
+	val link: String,
 
 	@field:SerializedName("description")
 	val description: String,
