@@ -1,52 +1,10 @@
 @file:Suppress("unused", "RedundantSuppression")
 package com.nadzirakarimantika.dicodingevent.ui
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nadzirakarimantika.dicodingevent.data.remote.response.DetailResponse
-import com.nadzirakarimantika.dicodingevent.data.remote.response.Event
-import com.nadzirakarimantika.dicodingevent.data.remote.retrofit.ApiConfig
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.nadzirakarimantika.dicodingevent.data.EventRepository
 
-class DetailViewModel : ViewModel() {
-    private val _detailEvent = MutableLiveData<Event>()
-    val event: LiveData<Event> get() = _detailEvent
+class DetailViewModel (private val repository: EventRepository) : ViewModel() {
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
-
-    private val _showToastMessage = MutableLiveData<String?>()
-    val showToastMessage: LiveData<String?> get() = _showToastMessage
-
-    private val tag = "DetailViewModel"
-
-    fun findEvent(eventId: String) {
-        _isLoading.value = true
-        val client = ApiConfig.getApiService().getDetailEvent(eventId)
-        client.enqueue(object : Callback<DetailResponse> {
-            override fun onResponse(
-                call: Call<DetailResponse>,
-                response: Response<DetailResponse>
-            ) {
-                _isLoading.value = false
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    val event = responseBody?.event ?: throw IllegalStateException("Event is null but expected a non-nullable value")
-                    _detailEvent.value = event
-                } else {
-                    _showToastMessage.value = response.message()
-                }
-            }
-
-            override fun onFailure(call: Call<DetailResponse>, t: Throwable) {
-                _isLoading.value = false
-                Log.e(tag, "onFailure: ${t.message}")
-                _showToastMessage.value = "Failed to load events. Please try again."
-            }
-        })
-    }
+    fun getDetailEvent(query: String) = repository.getDetailEvent(query)
 }

@@ -8,6 +8,7 @@ import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
 
 @Dao
 interface EventDao {
+
     @Query("SELECT * FROM event where status = 1")
     fun getUpcomingEvent(): LiveData<List<EventEntity>>
 

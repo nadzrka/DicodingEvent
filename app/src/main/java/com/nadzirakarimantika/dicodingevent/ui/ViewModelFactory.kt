@@ -31,7 +31,7 @@ class ViewModelFactory private constructor(
             }
 
             modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
-                DetailViewModel() as T
+                DetailViewModel(eventRepository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

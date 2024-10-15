@@ -9,19 +9,19 @@ data class DetailResponse(
 )
 
 data class Event(
-	val summary: String? = null,
-	val mediaCover: String? = null,
-	val registrants: Int? = null,
-	val imageLogo: String? = null,
-	val link: String? = null,
-	val description: String? = null,
-	val ownerName: String? = null,
-	val cityName: String? = null,
-	val quota: Int? = null,
-	val name: String? = null,
-	val id: Int? = null,
-	val beginTime: String? = null,
-	val endTime: String? = null,
-	val category: String? = null
+	val summary: String,
+	val mediaCover: String,
+	val registrants: Int,
+	val imageLogo: String,
+	val link: String,
+	val description: String,
+	val ownerName: String,
+	val cityName: String,
+	val quota: Int,
+	val name: String,
+	val id: Int,
+	val beginTime: String,
+	val endTime: String,
+	val category: String
 )
 
