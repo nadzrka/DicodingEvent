@@ -135,6 +135,7 @@ class HomeFragment : Fragment() {
             is Result.Error -> {
                 binding.progressBar.visibility = View.GONE
                 binding.tvNoEvent.visibility = View.VISIBLE
+                binding.tvNoEvent2.visibility = View.VISIBLE
                 adapter.submitList(emptyList())
                 Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
             }
