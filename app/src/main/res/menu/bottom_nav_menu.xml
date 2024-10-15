@@ -18,5 +18,11 @@
         android:title="@string/event_finished"
         android:iconTint="@color/black"/>
 
+    <item
+        android:id="@+id/navigation_favorite"
+        android:icon="@drawable/favorite"
+        android:title="@string/event_favorite"
+        android:iconTint="@color/black"/>
+
 
 </menu>

@@ -23,6 +23,7 @@ class EventAdapter(
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val event = getItem(position)
         holder.bind(event)
+
     }
 
     class EventViewHolder(

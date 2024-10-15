@@ -16,6 +16,9 @@ interface ApiService {
     @GET("https://event-api.dicoding.dev/events?active=0")
     fun getFinishedEvent(): Call<EventResponse>
 
+    @GET("https://event-api.dicoding.dev/events")
+    fun getEvent(): Call<EventResponse>
+
     @GET("https://event-api.dicoding.dev/events/{id}")
     fun getDetailEvent(@Path("id") eventId: String): Call<DetailResponse>
 

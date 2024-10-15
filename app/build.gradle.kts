@@ -48,6 +48,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.legacy.support.v4)
     ksp(libs.room.compiler)
     implementation(libs.androidxFragmentKtx)
     implementation (libs.material3)

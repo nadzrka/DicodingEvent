@@ -7,4 +7,5 @@ import com.nadzirakarimantika.dicodingevent.data.EventRepository
 class DetailViewModel (private val repository: EventRepository) : ViewModel() {
 
     fun getDetailEvent(query: String) = repository.getDetailEvent(query)
+
 }

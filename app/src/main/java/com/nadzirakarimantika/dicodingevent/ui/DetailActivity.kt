@@ -21,6 +21,7 @@ import com.nadzirakarimantika.dicodingevent.databinding.ActivityDetailBinding
 
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
+    private var isBookmarked = false
     private val detailViewModel by viewModels<DetailViewModel> {
         ViewModelFactory.getInstance(application)
     }
@@ -40,6 +41,17 @@ class DetailActivity : AppCompatActivity() {
 
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.floatingActionButton.setOnClickListener {
+            isBookmarked = !isBookmarked
+            if (isBookmarked) {
+                binding.floatingActionButton.setImageResource(R.drawable.favorite)
+                Toast.makeText(this, getString(R.string.added_to_favorite), Toast.LENGTH_SHORT).show()
+            } else {
+                binding.floatingActionButton.setImageResource(R.drawable.baseline_favorite_border_24)
+                Toast.makeText(this, getString(R.string.removed_from_favorite), Toast.LENGTH_SHORT).show()
+            }
+        }
 
         val eventId = intent.getStringExtra(EXTRA_EVENT_ID)
 

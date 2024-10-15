@@ -22,4 +22,8 @@
     <string name="no_internet_connection">No internet connection</string>
     <string name="no_events_found">No events found</string>
     <string name="home">Home</string>
+    <string name="event_favorite">Favorite</string>
+    <string name="title_favorite">Favorite Event</string>
+    <string name="added_to_favorite">Added to favorite</string>
+    <string name="removed_from_favorite">Removed from favorite</string>
 </resources>

@@ -138,6 +138,22 @@ class EventRepository private constructor(
         return result
     }
 
+    fun getFavoriteEvents(): LiveData<Result<List<EventEntity>>> {
+        val result = MediatorLiveData<Result<List<EventEntity>>>()
+        result.value = Result.Loading
+
+        val localData = eventDao.getBookmarkedEvent()
+        result.addSource(localData) { events ->
+            if (events.isNotEmpty()) {
+                result.value = Result.Success(events)
+            } else {
+                result.value = Result.Error("No favorite events found")
+            }
+        }
+
+        return result
+    }
+
     fun searchEvents(query: String, isFinished: Boolean): LiveData<Result<List<EventEntity>>> {
         val result = MediatorLiveData<Result<List<EventEntity>>>()
         result.value = Result.Loading
@@ -206,7 +222,6 @@ class EventRepository private constructor(
                                 isBookmarked,
                                 isActive = true
                             )
-                            eventDao.deleteUpcomingEvents()
                             eventDao.insertEvent(listOf(eventEntity))
                         }
                     }
