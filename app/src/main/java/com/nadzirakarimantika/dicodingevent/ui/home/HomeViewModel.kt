@@ -9,6 +9,6 @@ class HomeViewModel(private val repository: EventRepository) : ViewModel() {
 
     fun getFinishedEvents() = repository.getFinishedEvents()
     fun getUpcomingEvents() = repository.getUpcomingEvents()
-    fun searchUpcomingEvents(query: String) = repository.searchUpcomingEvents(query)
-    fun searchFinishedEvents(query: String) = repository.searchFinishedEvents(query)
+    fun searchUpcomingEvents(query: String) = repository.searchEvents(query, isFinished = false)
+    fun searchFinishedEvents(query: String) = repository.searchEvents(query, isFinished = true)
 }

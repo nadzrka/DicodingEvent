@@ -178,43 +178,21 @@ class EventRepository private constructor(
 
         return eventData
     }
-    fun searchFinishedEvents(query: String): LiveData<Result<List<EventEntity>>> {
+
+    fun searchEvents(query: String, isFinished: Boolean): LiveData<Result<List<EventEntity>>> {
         val result = MediatorLiveData<Result<List<EventEntity>>>()
         result.value = Result.Loading
 
-        val searchResults = if (query.isEmpty()) {
-            eventDao.getFinishedEvent()
-        } else {
-            eventDao.searchEvents("%$query%")
-        }
+        val searchResults =
+            if (query.isEmpty()) {
+                if (isFinished) eventDao.getFinishedEvent() else eventDao.getUpcomingEvent()
+            }
+            else {
+                if (isFinished) eventDao.searchFinishedEvents("%$query%") else eventDao.searchUpcomingEvents("%$query%")
+            }
 
         result.addSource(searchResults) { events ->
-            if (events.isNotEmpty()) {
-                result.value = Result.Success(events)
-            } else {
-                result.value = Result.Error("No events found")
-            }
-        }
-
-        return result
-    }
-
-    fun searchUpcomingEvents(query: String): LiveData<Result<List<EventEntity>>> {
-        val result = MediatorLiveData<Result<List<EventEntity>>>()
-        result.value = Result.Loading
-
-        val searchResults = if (query.isEmpty()) {
-            eventDao.getUpcomingEvent()
-        } else {
-            eventDao.searchEvents("%$query%")
-        }
-
-        result.addSource(searchResults) { events ->
-            if (events.isNotEmpty()) {
-                result.value = Result.Success(events)
-            } else {
-                result.value = Result.Error("No events found")
-            }
+            result.value = if (events.isNotEmpty()) Result.Success(events) else Result.Error("No events found")
         }
 
         return result

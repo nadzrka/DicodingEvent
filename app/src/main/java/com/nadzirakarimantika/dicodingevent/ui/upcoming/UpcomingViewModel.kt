@@ -8,5 +8,5 @@ import com.nadzirakarimantika.dicodingevent.data.EventRepository
 class UpcomingViewModel(private val eventRepository: EventRepository) : ViewModel() {
 
     fun findUpcomingEvents() = eventRepository.getUpcomingEvents()
-    fun searchFinishedEvents(query: String) = eventRepository.searchUpcomingEvents(query)
+    fun searchUpcomingEvents(query: String) = eventRepository.searchEvents(query, isFinished = false)
 }

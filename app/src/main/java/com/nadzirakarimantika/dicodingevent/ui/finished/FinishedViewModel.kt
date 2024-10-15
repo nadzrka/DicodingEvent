@@ -8,7 +8,7 @@ import com.nadzirakarimantika.dicodingevent.data.EventRepository
 class FinishedViewModel(private val repository: EventRepository) : ViewModel() {
 
     fun findFinishedEvent() = repository.getFinishedEvents()
-    fun searchFinishedEvents(query: String) = repository.searchFinishedEvents(query)
+    fun searchFinishedEvents(query: String) = repository.searchEvents(query, isFinished = true)
 
 }
 

@@ -71,8 +71,7 @@ class FinishedFragment : Fragment() {
 
                 is Result.Error -> {
                     binding.progressBar.visibility = View.GONE
-                    binding.tvNoEvent.visibility = View.VISIBLE
-                    binding.rvEvent.visibility = View.GONE
+                    binding.rvEvent.visibility = View.VISIBLE
                     Toast.makeText(
                         context,
                         result.error,
@@ -105,8 +104,8 @@ class FinishedFragment : Fragment() {
                 }
                 is Result.Error -> {
                     binding.progressBar.visibility = View.GONE
-                    binding.tvNoEvent.visibility = View.VISIBLE
                     binding.rvEvent.visibility = View.GONE
+                    binding.tvNoEvent.visibility = View.VISIBLE
                     Toast.makeText(
                         context,
                         result.error,

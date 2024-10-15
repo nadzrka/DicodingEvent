@@ -23,8 +23,11 @@ interface EventDao {
     @Update
     fun updateEvent(event: EventEntity)
 
-    @Query("SELECT * FROM event WHERE name LIKE :query")
-    fun searchEvents(query: String): LiveData<List<EventEntity>>
+    @Query("SELECT * FROM event WHERE name LIKE :query AND status = 1")
+    fun searchUpcomingEvents(query: String): LiveData<List<EventEntity>>
+
+    @Query("SELECT * FROM event WHERE name LIKE :query AND status = 0")
+    fun searchFinishedEvents(query: String): LiveData<List<EventEntity>>
 
     @Query("DELETE FROM event WHERE bookmarked = 0")
     fun deleteAll()
