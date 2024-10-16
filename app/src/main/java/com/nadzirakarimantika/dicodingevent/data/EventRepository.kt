@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
-import com.nadzirakarimantika.dicodingevent.data.local.entity.FavoriteEntity
 import com.nadzirakarimantika.dicodingevent.data.local.room.EventDao
 import com.nadzirakarimantika.dicodingevent.data.remote.response.DetailResponse
 import com.nadzirakarimantika.dicodingevent.data.remote.response.Event
@@ -139,10 +138,17 @@ class EventRepository private constructor(
         return result
     }
 
+    fun setBookmarkedEvent(event: EventEntity, bookmarkState: Boolean) {
+        appExecutors.diskIO.execute {
+            event.isBookmarked = bookmarkState
+            eventDao.updateEvent(event)
+        }
+    }
+
     fun addFavoriteEvent(): LiveData<Result<List<EventEntity>>> {
         val result = MediatorLiveData<Result<List<EventEntity>>>()
         result.value = Result.Loading
-        val client = apiService.getUpcomingEvent()
+        val client = apiService.getEvent()
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
                 if (response.isSuccessful) {
@@ -172,7 +178,7 @@ class EventRepository private constructor(
                             eventList.add(events)
                         }
 
-                        eventDao.deleteUpcomingEvents()
+                        eventDao.deleteEvents()
                         eventDao.insertEvent(eventList)
                     }
                 } else {
@@ -185,7 +191,7 @@ class EventRepository private constructor(
             }
         })
 
-        val localData = eventDao.getUpcomingEvent()
+        val localData = eventDao.getEvent()
         result.addSource(localData) { newData: List<EventEntity> ->
             result.value = Result.Success(newData)
         }

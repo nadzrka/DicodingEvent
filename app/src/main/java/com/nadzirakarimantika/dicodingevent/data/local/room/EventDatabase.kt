@@ -7,9 +7,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
-import com.nadzirakarimantika.dicodingevent.data.local.entity.FavoriteEntity
 
-@Database(entities = [EventEntity::class, FavoriteEntity::class], version = 3, exportSchema = false)
+@Database(entities = [EventEntity::class], version = 4, exportSchema = false)
 abstract class EventDatabase : RoomDatabase() {
 
     abstract fun eventDao(): EventDao

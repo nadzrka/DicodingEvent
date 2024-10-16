@@ -18,12 +18,12 @@ import androidx.core.text.HtmlCompat
 import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.data.Result
 import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
-import com.nadzirakarimantika.dicodingevent.data.remote.response.Event
 import com.nadzirakarimantika.dicodingevent.databinding.ActivityDetailBinding
 
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
     private var isBookmarked = false
+    private var currentEvent: EventEntity? = null
     private val detailViewModel by viewModels<DetailViewModel> {
         ViewModelFactory.getInstance(application)
     }
@@ -33,7 +33,12 @@ class DetailActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(ContextCompat.getDrawable(this@DetailActivity, R.drawable.arrow_back_24dp_e8eaed_fill0_wght400_grad0_opsz24)) // Set custom back button
+            setHomeAsUpIndicator(
+                ContextCompat.getDrawable(
+                    this@DetailActivity,
+                    R.drawable.arrow_back_24dp_e8eaed_fill0_wght400_grad0_opsz24
+                )
+            )
             title = getString(R.string.detail_event)
         }
 
@@ -44,97 +49,78 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.floatingActionButton.setOnClickListener {
-            isBookmarked = !isBookmarked
-            if (isBookmarked) {
-                detailViewModel.addFavorite()
-                binding.floatingActionButton.setImageResource(R.drawable.favorite)
-                Toast.makeText(this, getString(R.string.added_to_favorite), Toast.LENGTH_SHORT).show()
-            } else {
-                binding.floatingActionButton.setImageResource(R.drawable.baseline_favorite_border_24)
-                Toast.makeText(this, getString(R.string.removed_from_favorite), Toast.LENGTH_SHORT).show()
-            }
-        }
-
         val eventId = intent.getStringExtra(EXTRA_EVENT_ID)
 
         if (eventId != null) {
-            detailViewModel.getDetailEvent(eventId).observe(this) { result ->
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        val event = result.data
-                        val remainingQuota = event.quota - event.registrants
-                        binding.eventName.text =  HtmlCompat.fromHtml(
-                            event.name,
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                        binding.eventDescription.text =  HtmlCompat.fromHtml(
-                            event.description,
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                        binding.eventCategory.text =  HtmlCompat.fromHtml(
-                            event.category,
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                        binding.eventOwner.text = HtmlCompat.fromHtml(
-                            "Diselenggarakan oleh: " + event.ownerName,
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                        binding.eventCity.text =  HtmlCompat.fromHtml(
-                            event.cityName,
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                        binding.eventSummary.text =  HtmlCompat.fromHtml(
-                            event.summary,
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                        binding.eventQuota.text =  HtmlCompat.fromHtml(
-                            "Sisa quota: $remainingQuota",
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                        binding.eventBeginTime.text =  HtmlCompat.fromHtml(
-                            event.beginTime,
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
+            observeEventDetails(eventId)
+        }
 
-                        binding.linkButton.setOnClickListener {
-                            val intent = Intent(Intent.ACTION_VIEW)
-                            intent.data = Uri.parse(event.link)
-                            startActivity(intent)
-                        }
-
-                        Glide.with(this)
-                            .load(event.mediaCover)
-                            .into(binding.imageView)
-                    }
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+        binding.floatingActionButton.setOnClickListener {
+            toggleBookmark()
         }
     }
 
-    private fun handleAddFavorite() {
-        detailViewModel.addFavorite().observe(this) { result ->
+    private fun observeEventDetails(eventId: String) {
+        detailViewModel.getDetailEvent(eventId).observe(this) { result ->
             when (result) {
                 is Result.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
                 }
                 is Result.Success -> {
-                    detailViewModel.getFavorite()
                     binding.progressBar.visibility = View.GONE
+                    val event = result.data
+                    currentEvent = event
+                    isBookmarked = event.isBookmarked
+                    updateFabIcon(isBookmarked)
+                    populateEventDetails(event)
                 }
                 is Result.Error -> {
                     binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
                 }
             }
         }
+    }
+
+    private fun populateEventDetails(event: EventEntity) {
+        val remainingQuota = event.quota - event.registrants
+        binding.eventName.text = HtmlCompat.fromHtml(event.name, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.eventDescription.text = HtmlCompat.fromHtml(event.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.eventCategory.text = HtmlCompat.fromHtml(event.category, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.eventOwner.text = HtmlCompat.fromHtml("Diselenggarakan oleh: ${event.ownerName}", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.eventCity.text = HtmlCompat.fromHtml(event.cityName, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.eventSummary.text = HtmlCompat.fromHtml(event.summary, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.eventQuota.text = HtmlCompat.fromHtml("Sisa quota: $remainingQuota", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.eventBeginTime.text = HtmlCompat.fromHtml(event.beginTime, HtmlCompat.FROM_HTML_MODE_LEGACY)
+
+        binding.linkButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(event.link)
+            startActivity(intent)
+        }
+
+        Glide.with(this)
+            .load(event.mediaCover)
+            .into(binding.imageView)
+    }
+
+    private fun toggleBookmark() {
+        currentEvent?.let { event ->
+            isBookmarked = !isBookmarked
+            updateFabIcon(isBookmarked)
+            if (isBookmarked) {
+                detailViewModel.saveEvent(event)
+                Toast.makeText(this, getString(R.string.added_to_favorite), Toast.LENGTH_SHORT).show()
+            } else {
+                detailViewModel.deleteEvent(event)
+                Toast.makeText(this, getString(R.string.removed_from_favorite), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun updateFabIcon(isBookmarked: Boolean) {
+        val iconRes = if (isBookmarked) R.drawable.favorite else R.drawable.baseline_favorite_border_24
+        binding.floatingActionButton.setImageResource(iconRes)
     }
 
     private fun isConnectedToInternet(): Boolean {
@@ -156,5 +142,4 @@ class DetailActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_EVENT_ID = "extra_event_id"
     }
-
 }
