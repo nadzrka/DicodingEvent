@@ -3,12 +3,16 @@
 package com.nadzirakarimantika.dicodingevent.ui
 
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -26,9 +30,10 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.apply {
-             title = getString(R.string.home)
-        }
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        toolbar.overflowIcon?.setTint(ContextCompat.getColor(this, R.color.white))
+
 
         if (!isConnectedToInternet()) {
             Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
@@ -48,6 +53,21 @@ class HomeActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_setting, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.about_page -> {
+                val intent = Intent(this, SettingActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
     private fun isConnectedToInternet(): Boolean {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork ?: return false

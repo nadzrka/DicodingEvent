@@ -31,6 +31,17 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (!isConnectedToInternet()) {
+            Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
+        }
+
+        binding = ActivityDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        toolbar.overflowIcon?.setTint(ContextCompat.getColor(this, R.color.white))
+
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(
@@ -41,13 +52,6 @@ class DetailActivity : AppCompatActivity() {
             )
             title = getString(R.string.detail_event)
         }
-
-        if (!isConnectedToInternet()) {
-            Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
-        }
-
-        binding = ActivityDetailBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         val eventId = intent.getStringExtra(EXTRA_EVENT_ID)
 
@@ -87,10 +91,10 @@ class DetailActivity : AppCompatActivity() {
         binding.eventName.text = HtmlCompat.fromHtml(event.name, HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.eventDescription.text = HtmlCompat.fromHtml(event.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.eventCategory.text = HtmlCompat.fromHtml(event.category, HtmlCompat.FROM_HTML_MODE_LEGACY)
-        binding.eventOwner.text = HtmlCompat.fromHtml("Diselenggarakan oleh: ${event.ownerName}", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.eventOwner.text = HtmlCompat.fromHtml(getString(R.string.diselenggarakan_oleh, event.ownerName), HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.eventCity.text = HtmlCompat.fromHtml(event.cityName, HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.eventSummary.text = HtmlCompat.fromHtml(event.summary, HtmlCompat.FROM_HTML_MODE_LEGACY)
-        binding.eventQuota.text = HtmlCompat.fromHtml("Sisa quota: $remainingQuota", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.eventQuota.text = HtmlCompat.fromHtml(getString(R.string.sisa_quota, remainingQuota.toString()), HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.eventBeginTime.text = HtmlCompat.fromHtml(event.beginTime, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
         binding.linkButton.setOnClickListener {
@@ -105,8 +109,8 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun toggleBookmark() {
+        isBookmarked = !isBookmarked
         currentEvent?.let { event ->
-            isBookmarked = !isBookmarked
             updateFabIcon(isBookmarked)
             if (isBookmarked) {
                 detailViewModel.saveEvent(event)

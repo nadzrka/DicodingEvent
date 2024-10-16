@@ -26,4 +26,10 @@
     <string name="title_favorite">Favorite Event</string>
     <string name="added_to_favorite">Added to favorite</string>
     <string name="removed_from_favorite">Removed from favorite</string>
+    <string name="diselenggarakan_oleh">Diselenggarakan oleh: %1$s</string>
+    <string name="sisa_quota">Sisa quota: %1$s</string>
+    <string name="setting">setting</string>
+    <string name="setting_title">Setting</string>
+    <string name="mode">Dark mode</string>
+    <string name="display_options">Display options</string>
 </resources>

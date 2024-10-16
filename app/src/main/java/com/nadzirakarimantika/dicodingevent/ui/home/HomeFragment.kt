@@ -33,6 +33,7 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         setupRecyclerViews()
         setupSearchView()
+
         return binding.root
     }
 
