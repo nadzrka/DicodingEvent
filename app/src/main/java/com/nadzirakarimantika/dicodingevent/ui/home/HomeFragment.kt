@@ -92,21 +92,29 @@ class HomeFragment : Fragment() {
                 if (searchQuery.isNotEmpty()) {
                     searchEvents(searchQuery)
                 } else {
-                    homeViewModel.getUpcomingEvents()
-                    homeViewModel.getFinishedEvents()
+                    resetToAllEvents()
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText.isNullOrEmpty()) {
-                    homeViewModel.getUpcomingEvents()
-                    homeViewModel.getFinishedEvents()
+                    resetToAllEvents()
                 }
                 return true
             }
         })
     }
+
+    private fun resetToAllEvents() {
+        homeViewModel.getUpcomingEvents().observe(viewLifecycleOwner) { result ->
+            handleEventResult(result, eventHorizontalAdapter)
+        }
+        homeViewModel.getFinishedEvents().observe(viewLifecycleOwner) { result ->
+            handleEventResult(result, eventVerticalAdapter)
+        }
+    }
+
 
     private fun searchEvents(query: String) {
         homeViewModel.searchUpcomingEvents(query).observe(viewLifecycleOwner) { result ->

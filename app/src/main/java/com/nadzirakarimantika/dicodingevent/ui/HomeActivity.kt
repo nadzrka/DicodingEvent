@@ -9,16 +9,25 @@ import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.CompoundButton
 import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.databinding.ActivityHomeBinding
+import com.nadzirakarimantika.dicodingevent.ui.setting.SettingActivity
+import com.nadzirakarimantika.dicodingevent.ui.setting.SettingPreferences
+import com.nadzirakarimantika.dicodingevent.ui.setting.SettingViewModelFactory
+import com.nadzirakarimantika.dicodingevent.ui.setting.SettingsViewModel
+import com.nadzirakarimantika.dicodingevent.ui.setting.dataStore
 
 class HomeActivity : AppCompatActivity() {
 
@@ -34,6 +43,18 @@ class HomeActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.overflowIcon?.setTint(ContextCompat.getColor(this, R.color.white))
 
+        val pref = SettingPreferences.getInstance(application.dataStore)
+        val settingsViewModel = ViewModelProvider(this, SettingViewModelFactory(pref)).get(
+            SettingsViewModel::class.java
+        )
+
+        settingsViewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
+            if (isDarkModeActive) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
 
         if (!isConnectedToInternet()) {
             Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()

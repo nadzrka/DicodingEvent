@@ -13,8 +13,7 @@
         android:layout_height="50dp"
         android:layout_margin="24dp"
         android:iconifiedByDefault="false"
-        style="@style/TextAppearanceBlack"
-        android:background="@drawable/search"
+        style="@style/SearchViewStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,8 +34,7 @@
         app:layout_constraintTop_toBottomOf="@id/searchView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="@android:color/black"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

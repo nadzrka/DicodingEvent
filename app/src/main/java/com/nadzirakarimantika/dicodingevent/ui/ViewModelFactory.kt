@@ -38,6 +38,7 @@ class ViewModelFactory private constructor(
             modelClass.isAssignableFrom(FavoriteViewModel::class.java) -> {
                 FavoriteViewModel(eventRepository) as T
             }
+
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
     }
@@ -49,7 +50,7 @@ class ViewModelFactory private constructor(
         fun getInstance(context: Context): ViewModelFactory =
             instance ?: synchronized(this) {
                 instance ?: ViewModelFactory(
-                    Injection.provideFinishedRepository(context)
+                    Injection.provideEventRepository(context)
                 ).also { instance = it }
             }
     }

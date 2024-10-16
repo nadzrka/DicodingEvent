@@ -6,10 +6,11 @@ import android.content.Context
 import com.nadzirakarimantika.dicodingevent.data.EventRepository
 import com.nadzirakarimantika.dicodingevent.data.local.room.EventDatabase
 import com.nadzirakarimantika.dicodingevent.data.remote.retrofit.ApiConfig
+import com.nadzirakarimantika.dicodingevent.ui.setting.SettingsViewModel
 import com.nadzirakarimantika.dicodingevent.utils.AppExecutors
 
 object Injection {
-    fun provideFinishedRepository(context: Context): EventRepository {
+    fun provideEventRepository(context: Context): EventRepository {
         val apiService = ApiConfig.getApiService()
         val database = EventDatabase.getInstance(context)
         val dao = database.eventDao()
