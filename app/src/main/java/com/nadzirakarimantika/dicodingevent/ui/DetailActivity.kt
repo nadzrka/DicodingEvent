@@ -17,6 +17,8 @@ import com.bumptech.glide.Glide
 import androidx.core.text.HtmlCompat
 import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.data.Result
+import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
+import com.nadzirakarimantika.dicodingevent.data.remote.response.Event
 import com.nadzirakarimantika.dicodingevent.databinding.ActivityDetailBinding
 
 class DetailActivity : AppCompatActivity() {
@@ -45,6 +47,7 @@ class DetailActivity : AppCompatActivity() {
         binding.floatingActionButton.setOnClickListener {
             isBookmarked = !isBookmarked
             if (isBookmarked) {
+                detailViewModel.addFavorite()
                 binding.floatingActionButton.setImageResource(R.drawable.favorite)
                 Toast.makeText(this, getString(R.string.added_to_favorite), Toast.LENGTH_SHORT).show()
             } else {
@@ -112,6 +115,23 @@ class DetailActivity : AppCompatActivity() {
                         binding.progressBar.visibility = View.GONE
                         Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
                     }
+                }
+            }
+        }
+    }
+
+    private fun handleAddFavorite() {
+        detailViewModel.addFavorite().observe(this) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                is Result.Success -> {
+                    detailViewModel.getFavorite()
+                    binding.progressBar.visibility = View.GONE
+                }
+                is Result.Error -> {
+                    binding.progressBar.visibility = View.GONE
                 }
             }
         }
