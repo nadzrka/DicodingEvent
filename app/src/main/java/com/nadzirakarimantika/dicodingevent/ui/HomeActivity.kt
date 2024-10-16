@@ -9,7 +9,6 @@ import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.CompoundButton
 import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +19,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.switchmaterial.SwitchMaterial
 import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.databinding.ActivityHomeBinding
 import com.nadzirakarimantika.dicodingevent.ui.setting.SettingActivity

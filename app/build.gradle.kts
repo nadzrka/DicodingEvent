@@ -47,6 +47,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.android.async.http    )
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)

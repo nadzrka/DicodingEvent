@@ -1,11 +1,12 @@
 [versions]
+androidAsyncHttp = "1.4.10"
 datastorePreferences = "1.1.1"
 kotlinxCoroutinesAndroid = "1.7.3"
 kotlinxCoroutinesCore = "1.7.3"
 roomCompiler = "2.6.1"
 roomRuntime = "2.6.1"
 androidxFragment = "1.8.4"
-activityKtx = "1.9.2"
+activityKtx = "1.9.3"
 agp = "8.6.1"
 glide = "4.16.0"
 kotlin = "1.9.24"
@@ -16,18 +17,21 @@ espressoCore = "3.6.1"
 appcompat = "1.7.0"
 loggingInterceptor = "4.11.0"
 material3 = "1.12.0"
-activity = "1.9.2"
+activity = "1.9.3"
 constraintlayout = "2.1.4"
 retrofit = "2.9.0"
-navigationUiKtx = "2.8.2"
+navigationUiKtx = "2.8.3"
 lifecycleLivedataKtx = "2.8.6"
 lifecycleViewmodelKtx = "2.8.6"
-navigationFragmentKtx = "2.8.2"
-navigationFragment = "2.8.2"
+navigationFragmentKtx = "2.8.3"
+navigationFragment = "2.8.3"
 legacySupportV4 = "1.0.0"
+workRuntime = "2.9.1"
 
 [libraries]
+android-async-http = { module = "com.loopj.android:android-async-http", version.ref = "androidAsyncHttp" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "workRuntime" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }

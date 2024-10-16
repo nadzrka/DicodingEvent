@@ -15,6 +15,17 @@
         app:titleMargin="20dp"
         app:titleTextColor="@android:color/white" />
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_marginStart="64dp"
+        android:text="@string/Setting"
+        app:layout_constraintBottom_toTopOf="@id/switch_theme"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/switch_theme"
         android:layout_width="wrap_content"
@@ -26,15 +37,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView"/>
 
-    <TextView
-        android:id="@+id/textView"
+    <CheckBox
+        android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/notification"
         android:layout_margin="20dp"
-        android:layout_marginStart="64dp"
-        android:text="@string/display_options"
-        app:layout_constraintBottom_toTopOf="@id/switch_theme"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/switch_theme"
+        tools:layout_editor_absoluteX="41dp"
+        tools:layout_editor_absoluteY="222dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -31,5 +31,6 @@
     <string name="setting">setting</string>
     <string name="setting_title">Setting</string>
     <string name="mode">Dark mode</string>
-    <string name="display_options">Display options</string>
+    <string name="Setting">Setting</string>
+    <string name="notification">Notification</string>
 </resources>

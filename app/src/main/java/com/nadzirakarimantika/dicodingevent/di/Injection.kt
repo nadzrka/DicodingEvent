@@ -6,7 +6,6 @@ import android.content.Context
 import com.nadzirakarimantika.dicodingevent.data.EventRepository
 import com.nadzirakarimantika.dicodingevent.data.local.room.EventDatabase
 import com.nadzirakarimantika.dicodingevent.data.remote.retrofit.ApiConfig
-import com.nadzirakarimantika.dicodingevent.ui.setting.SettingsViewModel
 import com.nadzirakarimantika.dicodingevent.utils.AppExecutors
 
 object Injection {

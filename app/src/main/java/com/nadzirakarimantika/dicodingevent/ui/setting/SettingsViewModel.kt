@@ -1,3 +1,5 @@
+@file:Suppress("unused", "RedundantSuppression")
+
 package com.nadzirakarimantika.dicodingevent.ui.setting
 
 import androidx.lifecycle.LiveData
@@ -8,6 +10,7 @@ import kotlinx.coroutines.launch
 
 class SettingsViewModel(private val pref: SettingPreferences) : ViewModel() {
     fun getThemeSettings(): LiveData<Boolean> {
+        viewModelScope
         return pref.getThemeSetting().asLiveData()
     }
 

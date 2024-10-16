@@ -1,21 +1,54 @@
+@file:Suppress("unused", "RedundantSuppression")
+
 package com.nadzirakarimantika.dicodingevent.ui.setting
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.CompoundButton
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.databinding.ActivitySettingBinding
+import com.nadzirakarimantika.dicodingevent.ui.home.EventWorker
+import java.util.concurrent.TimeUnit
 
-class SettingActivity : AppCompatActivity() {
+class SettingActivity : AppCompatActivity(), View.OnClickListener {
+    private lateinit var periodicWorkRequest: PeriodicWorkRequest
+    private lateinit var workManager: WorkManager
     private lateinit var binding: ActivitySettingBinding
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Toast.makeText(this, "Notifications permission granted", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Notifications permission rejected", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -54,6 +87,35 @@ class SettingActivity : AppCompatActivity() {
         switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             settingsViewModel.saveThemeSetting(isChecked)
         }
+
+        workManager = WorkManager.getInstance(this)
+        binding.checkBox.setOnClickListener(this)
+    }
+
+    override fun onClick(view: View) {
+        when (view.id) {
+            R.id.checkBox ->
+                if (binding.checkBox.isChecked) {
+                startPeriodicTask()
+            } else cancelPeriodicTask()
+        }
+    }
+
+    private fun startPeriodicTask() {
+        val data = Data.Builder()
+            .build()
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        periodicWorkRequest = PeriodicWorkRequest.Builder(EventWorker::class.java, 1, TimeUnit.DAYS)
+            .setInputData(data)
+            .setConstraints(constraints)
+            .build()
+        workManager.enqueue(periodicWorkRequest)
+
+    }
+    private fun cancelPeriodicTask() {
+        workManager.cancelWorkById(periodicWorkRequest.id)
     }
 
     override fun onSupportNavigateUp(): Boolean {
