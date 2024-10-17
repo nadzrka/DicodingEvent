@@ -58,30 +58,11 @@ class HomeFragment : Fragment() {
 
     private fun observeEvents() {
         homeViewModel.getUpcomingEvents().observe(viewLifecycleOwner) { result ->
-            handleEventResult(result, eventHorizontalAdapter)
+            handleEvent(result, eventHorizontalAdapter)
         }
 
         homeViewModel.getFinishedEvents().observe(viewLifecycleOwner) { result ->
-            handleEventResult(result, eventVerticalAdapter)
-        }
-    }
-
-    private fun handleEventResult(result: Result<List<EventEntity>>, adapter: androidx.recyclerview.widget.ListAdapter<EventEntity, *>) {
-        when (result) {
-            is Result.Loading -> {
-                binding.tvNoEvent.visibility = View.GONE
-                binding.progressBar.visibility = View.VISIBLE
-            }
-            is Result.Success -> {
-                binding.tvNoEvent.visibility = if (result.data.isEmpty()) View.VISIBLE else View.GONE
-                binding.progressBar.visibility = View.GONE
-                adapter.submitList(result.data)
-            }
-            is Result.Error -> {
-                binding.progressBar.visibility = View.GONE
-                binding.tvNoEvent.visibility = View.GONE
-                Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
-            }
+            handleEvent(result, eventVerticalAdapter)
         }
     }
 
@@ -108,24 +89,47 @@ class HomeFragment : Fragment() {
 
     private fun resetToAllEvents() {
         homeViewModel.getUpcomingEvents().observe(viewLifecycleOwner) { result ->
-            handleEventResult(result, eventHorizontalAdapter)
+            handleEvent(result, eventHorizontalAdapter)
         }
         homeViewModel.getFinishedEvents().observe(viewLifecycleOwner) { result ->
-            handleEventResult(result, eventVerticalAdapter)
+            handleEvent(result, eventVerticalAdapter)
         }
     }
 
+    private fun handleEvent(result: Result<List<EventEntity>>, adapter: androidx.recyclerview.widget.ListAdapter<EventEntity, *>) {
+        when (result) {
+            is Result.Loading -> {
+                binding.progressBar.visibility = View.VISIBLE
+                binding.tvNoEvent.visibility = View.GONE
+            }
+            is Result.Success -> {
+                binding.progressBar.visibility = View.GONE
+                if (result.data.isEmpty()) {
+                    binding.tvNoEvent.visibility = View.VISIBLE
+                    adapter.submitList(emptyList())
+                } else {
+                    binding.tvNoEvent.visibility = View.GONE
+                    adapter.submitList(result.data)
+                }
+            }
+            is Result.Error -> {
+                binding.progressBar.visibility = View.GONE
+                adapter.submitList(emptyList())
+                Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     private fun searchEvents(query: String) {
         homeViewModel.searchUpcomingEvents(query).observe(viewLifecycleOwner) { result ->
-            handleSearchResult(result, eventHorizontalAdapter)
+            handleSearchUpcomingResult(result, eventHorizontalAdapter)
         }
         homeViewModel.searchFinishedEvents(query).observe(viewLifecycleOwner) { result ->
-            handleSearchResult(result, eventVerticalAdapter)
+            handleSearchFinishedResult(result, eventVerticalAdapter)
         }
     }
 
-    private fun handleSearchResult(result: Result<List<EventEntity>>, adapter: androidx.recyclerview.widget.ListAdapter<EventEntity, *>) {
+    private fun handleSearchUpcomingResult(result: Result<List<EventEntity>>, adapter: androidx.recyclerview.widget.ListAdapter<EventEntity, *>) {
         when (result) {
             is Result.Loading -> {
                 binding.progressBar.visibility = View.VISIBLE
@@ -144,12 +148,35 @@ class HomeFragment : Fragment() {
             is Result.Error -> {
                 binding.progressBar.visibility = View.GONE
                 binding.tvNoEvent.visibility = View.VISIBLE
-                binding.tvNoEvent2.visibility = View.VISIBLE
                 adapter.submitList(emptyList())
-                Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
             }
         }
     }
+
+    private fun handleSearchFinishedResult(result: Result<List<EventEntity>>, adapter: androidx.recyclerview.widget.ListAdapter<EventEntity, *>) {
+        when (result) {
+            is Result.Loading -> {
+                binding.progressBar.visibility = View.VISIBLE
+                binding.tvNoEvent2.visibility = View.GONE
+            }
+            is Result.Success -> {
+                binding.progressBar.visibility = View.GONE
+                if (result.data.isEmpty()) {
+                    binding.tvNoEvent2.visibility = View.VISIBLE
+                    adapter.submitList(emptyList())
+                } else {
+                    binding.tvNoEvent2.visibility = View.GONE
+                    adapter.submitList(result.data)
+                }
+            }
+            is Result.Error -> {
+                binding.progressBar.visibility = View.GONE
+                binding.tvNoEvent2.visibility = View.VISIBLE
+                adapter.submitList(emptyList())
+            }
+        }
+    }
+
 
     private fun navigateToDetailEvent(event: EventEntity) {
         val intent = Intent(requireContext(), DetailActivity::class.java).apply {

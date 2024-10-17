@@ -26,7 +26,6 @@
         android:text="@string/no_events_found"
         android:visibility="gone"
         tools:visibility="visible"
-        android:textColorHint="@color/blue"
         android:layout_gravity="center"
         android:textSize="18sp"
         android:paddingVertical="30dp"
