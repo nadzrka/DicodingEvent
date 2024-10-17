@@ -47,6 +47,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.okhttp)
     implementation(libs.androidx.work.runtime)
     implementation(libs.android.async.http    )
     implementation(libs.androidx.datastore.preferences)
