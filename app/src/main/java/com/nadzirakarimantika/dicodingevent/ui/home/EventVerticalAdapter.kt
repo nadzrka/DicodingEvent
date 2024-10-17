@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
 import com.nadzirakarimantika.dicodingevent.databinding.ItemEventVerticalBinding
 
@@ -39,6 +41,12 @@ class EventVerticalAdapter(
             )
             Glide.with(itemView.context)
                 .load(event.imageLogo)
+                .apply(
+                    RequestOptions()
+                        .placeholder(R.drawable.placeholder_square)
+                        .error(R.drawable.placeholder_square)
+                        .fitCenter()
+                )
                 .into(binding.imgItemPhoto)
 
             itemView.setOnClickListener {

@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -79,7 +78,6 @@ class HomeFragment : Fragment() {
             is Result.Error -> {
                 binding.progressBar.visibility = View.GONE
                 binding.tvNoEvent.visibility = View.GONE
-                Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -140,11 +138,6 @@ class HomeFragment : Fragment() {
                     binding.progressBar.visibility = View.GONE
                     binding.rvEvent.visibility = View.GONE
                     binding.tvNoEvent.visibility = View.VISIBLE
-                    Toast.makeText(
-                        context,
-                        result.error,
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
         }
@@ -173,11 +166,6 @@ class HomeFragment : Fragment() {
                     binding.progressBar.visibility = View.GONE
                     binding.rvEvent.visibility = View.GONE
                     binding.tvNoEvent.visibility = View.VISIBLE
-                    Toast.makeText(
-                        context,
-                        result.error,
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
         }
@@ -217,7 +205,6 @@ class HomeFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 binding.tvNoEvent.visibility = View.VISIBLE
                 adapter.submitList(emptyList())
-                Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -242,7 +229,6 @@ class HomeFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 binding.tvNoEvent2.visibility = View.VISIBLE
                 adapter.submitList(emptyList())
-                Toast.makeText(context, result.error, Toast.LENGTH_SHORT).show()
             }
         }
     }
