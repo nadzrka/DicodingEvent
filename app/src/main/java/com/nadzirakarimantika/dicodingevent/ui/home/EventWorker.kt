@@ -50,7 +50,8 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
                     val name: String = responseObject.getJSONArray("listEvents").getJSONObject(0).getString("name")
                     val date: String = responseObject.getJSONArray("listEvents").getJSONObject(0).getString("beginTime")
                     val title = "Event yang akan datang: $name"
-                    showNotification(title, date)
+                    val time = "Diadakan pada: $date"
+                    showNotification(title, time)
                     Log.d(TAG, "onSuccess: Selesai.....")
                     resultStatus = Result.success()
                 } catch (e: Exception) {
