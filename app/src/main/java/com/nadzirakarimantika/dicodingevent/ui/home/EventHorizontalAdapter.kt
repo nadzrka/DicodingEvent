@@ -55,7 +55,7 @@ class EventHorizontalAdapter(
         }
     }
 
-    override fun getItemCount(): Int = currentList.take(5).size
+    override fun getItemCount(): Int = currentList.size
 
     companion object {
         val DIFF_CALLBACK: DiffUtil.ItemCallback<EventEntity> =

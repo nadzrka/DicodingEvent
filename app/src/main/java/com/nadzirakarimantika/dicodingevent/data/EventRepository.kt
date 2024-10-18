@@ -145,59 +145,6 @@ class EventRepository private constructor(
         }
     }
 
-    fun addFavoriteEvent(): LiveData<Result<List<EventEntity>>> {
-        val result = MediatorLiveData<Result<List<EventEntity>>>()
-        result.value = Result.Loading
-        val client = apiService.getEvent()
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                if (response.isSuccessful) {
-                    val listEvents = response.body()?.listEvents
-                    val eventList = ArrayList<EventEntity>()
-                    appExecutors.diskIO.execute {
-                        listEvents?.forEach { event ->
-                            val isActive = eventDao.isEventActive(event.name)
-                            val events = EventEntity(
-                                event.name,
-                                event.beginTime,
-                                event.imageLogo,
-                                event.summary,
-                                event.ownerName,
-                                event.mediaCover,
-                                event.registrants,
-                                event.link,
-                                event.description,
-                                event.cityName,
-                                event.quota,
-                                event.id,
-                                event.endTime,
-                                event.category,
-                                isBookmarked = true,
-                                isActive
-                            )
-                            eventList.add(events)
-                        }
-
-                        eventDao.deleteEvents()
-                        eventDao.insertEvent(eventList)
-                    }
-                } else {
-                    result.postValue(Result.Error("Failed to fetch upcoming events: ${response.message()}"))
-                }
-            }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                result.postValue(Result.Error(t.message.toString()))
-            }
-        })
-
-        val localData = eventDao.getEvent()
-        result.addSource(localData) { newData: List<EventEntity> ->
-            result.value = Result.Success(newData)
-        }
-        return result
-    }
-
     fun getFavoriteEvents(): LiveData<Result<List<EventEntity>>> {
         val result = MediatorLiveData<Result<List<EventEntity>>>()
         result.value = Result.Loading
@@ -230,25 +177,6 @@ class EventRepository private constructor(
         }
 
         return result
-    }
-
-    private fun mapEventEntityToEvent(entity: EventEntity): Event {
-        return Event(
-            id = entity.id,
-            name = entity.name,
-            description = entity.description,
-            category = entity.category,
-            ownerName = entity.ownerName,
-            cityName = entity.cityName,
-            summary = entity.summary,
-            quota = entity.quota,
-            registrants = entity.registrants,
-            beginTime = entity.beginTime,
-            mediaCover = entity.mediaCover,
-            imageLogo = entity.imageLogo,
-            endTime = entity.endTime,
-            link = entity.link
-        )
     }
 
     fun getDetailEvent(eventId : String): LiveData<Result<EventEntity>> {

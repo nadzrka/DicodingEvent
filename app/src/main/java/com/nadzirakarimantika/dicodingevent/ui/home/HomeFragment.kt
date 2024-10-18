@@ -71,9 +71,10 @@ class HomeFragment : Fragment() {
                 binding.progressBar.visibility = View.VISIBLE
             }
             is Result.Success -> {
+                val eventData = result.data.take(5)
                 binding.tvNoEvent.visibility = if (result.data.isEmpty()) View.VISIBLE else View.GONE
                 binding.progressBar.visibility = View.GONE
-                adapter.submitList(result.data)
+                adapter.submitList(eventData)
             }
             is Result.Error -> {
                 binding.progressBar.visibility = View.GONE
@@ -97,8 +98,6 @@ class HomeFragment : Fragment() {
 
             override fun onQueryTextChange(query: String?): Boolean {
                 if (query.isNullOrEmpty()) {
-                    eventVerticalAdapter.submitList(emptyList())
-                    eventHorizontalAdapter.submitList(emptyList())
                     fetchAllEvents()
                 }
                 return true
