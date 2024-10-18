@@ -90,8 +90,7 @@ class HomeFragment : Fragment() {
                 if (searchQuery.isNotEmpty()) {
                     searchEvents(searchQuery)
                 } else {
-                    homeViewModel.getUpcomingEvents()
-                    homeViewModel.getFinishedEvents()
+                    fetchAllEvents()
                 }
                 return true
             }
@@ -172,13 +171,13 @@ class HomeFragment : Fragment() {
 
     private fun fetchAllEvents() {
         homeViewModel.getUpcomingEvents().observe(viewLifecycleOwner) { result ->
-            if (result is Result.Success && result.data != eventHorizontalAdapter.currentList) {
+            if (result is Result.Success) {
                 handleEventResult(result, eventHorizontalAdapter)
             }
         }
 
         homeViewModel.getFinishedEvents().observe(viewLifecycleOwner) { result ->
-            if (result is Result.Success && result.data != eventVerticalAdapter.currentList) {
+            if (result is Result.Success) {
                 handleEventResult(result, eventVerticalAdapter)
             }
         }

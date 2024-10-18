@@ -75,6 +75,7 @@ class FavoriteFragment : Fragment() {
             is Result.Error -> {
                 binding.progressBar.visibility = View.GONE
                 binding.tvNoEvent.visibility = View.VISIBLE
+                binding.rvEvent.visibility = View.GONE
                 Toast.makeText(
                     context,
                     result.error,
