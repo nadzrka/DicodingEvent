@@ -24,17 +24,14 @@ class SettingsViewModel(private val pref: SettingPreferences) : ViewModel() {
     private val _isPeriodicTaskEnabled = MutableLiveData<Boolean>()
     val isPeriodicTaskEnabled: LiveData<Boolean> get() = _isPeriodicTaskEnabled
 
-    fun loadNotificationSetting() {
-        viewModelScope.launch {
-            pref.notificationSetting().collect { isEnabled ->
-                _isPeriodicTaskEnabled.value = isEnabled
-            }
-        }
+    fun getNotificationSettings(): LiveData<Boolean> {
+        viewModelScope
+           return pref.getNotificationSetting().asLiveData()
     }
 
-    fun saveNotificationSetting(isEnabled: Boolean) {
+    fun saveNotificationSetting(isNotificationActive: Boolean) {
         viewModelScope.launch {
-            pref.saveNotificationSetting(isEnabled)
+            pref.saveNotificationSetting(isNotificationActive)
         }
     }
 }

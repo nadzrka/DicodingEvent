@@ -30,22 +30,21 @@
         android:id="@+id/switch_theme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="24dp"
         android:text="@string/mode"
-        android:layout_margin="20dp"
-        tools:layout_editor_absoluteX="125dp"
-        tools:layout_editor_absoluteY="252dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView"/>
+        app:layout_constraintTop_toBottomOf="@id/textView" />
 
-    <CheckBox
-        android:id="@+id/checkBox"
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switch_notifications"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginStart="20dp"
         android:text="@string/notification"
-        android:layout_margin="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/switch_theme"
-        tools:layout_editor_absoluteX="41dp"
-        tools:layout_editor_absoluteY="222dp" />
+        app:layout_constraintTop_toBottomOf="@id/switch_theme" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

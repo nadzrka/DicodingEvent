@@ -28,7 +28,7 @@ class SettingPreferences private constructor(private val dataStore: DataStore<Pr
         }
     }
 
-    fun notificationSetting(): Flow<Boolean> {
+    fun getNotificationSetting(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
             preferences[NOTIFICATION_KEY] ?: false
         }

@@ -19,17 +19,25 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.databinding.ActivityHomeBinding
+import com.nadzirakarimantika.dicodingevent.ui.home.EventWorker
 import com.nadzirakarimantika.dicodingevent.ui.setting.SettingActivity
 import com.nadzirakarimantika.dicodingevent.ui.setting.SettingPreferences
 import com.nadzirakarimantika.dicodingevent.ui.setting.SettingViewModelFactory
 import com.nadzirakarimantika.dicodingevent.ui.setting.SettingsViewModel
 import com.nadzirakarimantika.dicodingevent.ui.setting.dataStore
+import java.util.concurrent.TimeUnit
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var workManager: WorkManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +49,7 @@ class HomeActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.overflowIcon?.setTint(ContextCompat.getColor(this, R.color.white))
 
+        workManager = WorkManager.getInstance(this)
         val pref = SettingPreferences.getInstance(application.dataStore)
         val settingsViewModel = ViewModelProvider(this, SettingViewModelFactory(pref))[SettingsViewModel::class.java]
 
@@ -49,6 +58,14 @@ class HomeActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+
+        settingsViewModel.getNotificationSettings().observe(this) { isNotificationActive: Boolean ->
+            if (isNotificationActive) {
+                schedulePeriodicEventNotification()
+            } else {
+                cancelPeriodicTask()
             }
         }
 
@@ -85,6 +102,27 @@ class HomeActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    private fun schedulePeriodicEventNotification() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(EventWorker::class.java, 1, TimeUnit.DAYS)
+            .setConstraints(constraints)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            "EventNotificationWork",
+            ExistingPeriodicWorkPolicy.KEEP,
+            periodicWorkRequest
+        )
+    }
+
+    private fun cancelPeriodicTask() {
+        workManager.cancelUniqueWork("EventNotificationWork")
+    }
+
     private fun isConnectedToInternet(): Boolean {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork ?: return false

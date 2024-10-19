@@ -13,8 +13,6 @@ import androidx.work.*
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.databinding.ActivitySettingBinding
-import com.nadzirakarimantika.dicodingevent.ui.home.EventWorker
-import java.util.concurrent.TimeUnit
 
 class SettingActivity : AppCompatActivity() {
     private lateinit var workManager: WorkManager
@@ -58,9 +56,11 @@ class SettingActivity : AppCompatActivity() {
         toolbar.overflowIcon?.setTint(ContextCompat.getColor(this, R.color.white))
 
         val switchTheme = findViewById<SwitchMaterial>(R.id.switch_theme)
+        val switchNotifications = findViewById<SwitchMaterial>(R.id.switch_notifications)
 
         val pref = SettingPreferences.getInstance(application.dataStore)
-        val settingsViewModel = ViewModelProvider(this, SettingViewModelFactory(pref))[SettingsViewModel::class.java]
+        val settingsViewModel =
+            ViewModelProvider(this, SettingViewModelFactory(pref))[SettingsViewModel::class.java]
 
         settingsViewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
             AppCompatDelegate.setDefaultNightMode(if (isDarkModeActive) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
@@ -71,40 +71,13 @@ class SettingActivity : AppCompatActivity() {
             settingsViewModel.saveThemeSetting(isChecked)
         }
 
-        settingsViewModel.loadNotificationSetting()
-
-        settingsViewModel.isPeriodicTaskEnabled.observe(this) { isEnabled ->
-            binding.checkBox.isChecked = isEnabled
+        settingsViewModel.getNotificationSettings().observe(this) { isNotificationActive: Boolean ->
+            switchNotifications.isChecked = isNotificationActive
         }
 
-        binding.checkBox.setOnCheckedChangeListener { _, isChecked ->
+        switchNotifications.setOnCheckedChangeListener { _, isChecked ->
             settingsViewModel.saveNotificationSetting(isChecked)
-            if (isChecked) {
-                schedulePeriodicEventNotification()
-            } else {
-                cancelPeriodicTask()
-            }
         }
-    }
-
-    private fun schedulePeriodicEventNotification() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val periodicWorkRequest = PeriodicWorkRequest.Builder(EventWorker::class.java, 1, TimeUnit.DAYS)
-            .setConstraints(constraints)
-            .build()
-
-        workManager.enqueueUniquePeriodicWork(
-            "EventNotificationWork",
-            ExistingPeriodicWorkPolicy.KEEP,
-            periodicWorkRequest
-        )
-    }
-
-    private fun cancelPeriodicTask() {
-        workManager.cancelUniqueWork("EventNotificationWork")
     }
 
     override fun onSupportNavigateUp(): Boolean {
