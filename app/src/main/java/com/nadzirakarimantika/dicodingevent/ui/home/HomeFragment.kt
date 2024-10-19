@@ -113,62 +113,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun observeFinishedEvents(query: String) {
-        homeViewModel.searchFinishedEvents(query).observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.tvNoEvent.visibility = View.GONE
-                }
-                is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    val eventData = result.data
-                    if (eventData.isEmpty()) {
-                        binding.tvNoEvent.visibility = View.VISIBLE
-                        binding.rvEvent.visibility = View.GONE
-                    } else {
-                        binding.tvNoEvent.visibility = View.GONE
-                        binding.rvEvent.visibility = View.VISIBLE
-                        eventVerticalAdapter.submitList(eventData)
-                    }
-                }
-                is Result.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.rvEvent.visibility = View.GONE
-                    binding.tvNoEvent.visibility = View.VISIBLE
-                }
-            }
-        }
-    }
-
-    private fun observeUpcomingEvents(query: String) {
-        homeViewModel.searchUpcomingEvents(query).observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.tvNoEvent.visibility = View.GONE
-                }
-                is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    val eventData = result.data
-                    if (eventData.isEmpty()) {
-                        binding.tvNoEvent.visibility = View.VISIBLE
-                        binding.rvEvent.visibility = View.GONE
-                    } else {
-                        binding.tvNoEvent.visibility = View.GONE
-                        binding.rvEvent.visibility = View.VISIBLE
-                        eventHorizontalAdapter.submitList(eventData)
-                    }
-                }
-                is Result.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.rvEvent.visibility = View.GONE
-                    binding.tvNoEvent.visibility = View.VISIBLE
-                }
-            }
-        }
-    }
-
     private fun fetchAllEvents() {
         homeViewModel.getUpcomingEvents().observe(viewLifecycleOwner) { result ->
             if (result is Result.Success) {
