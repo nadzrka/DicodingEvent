@@ -5,7 +5,6 @@ package com.nadzirakarimantika.dicodingevent.ui.setting
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,7 +23,7 @@ import com.nadzirakarimantika.dicodingevent.databinding.ActivitySettingBinding
 import com.nadzirakarimantika.dicodingevent.ui.home.EventWorker
 import java.util.concurrent.TimeUnit
 
-class SettingActivity : AppCompatActivity(), View.OnClickListener {
+class SettingActivity : AppCompatActivity() {
     private lateinit var periodicWorkRequest: PeriodicWorkRequest
     private lateinit var workManager: WorkManager
     private lateinit var binding: ActivitySettingBinding
@@ -86,15 +85,20 @@ class SettingActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         workManager = WorkManager.getInstance(this)
-        binding.checkBox.setOnClickListener(this)
-    }
 
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.checkBox ->
-                if (binding.checkBox.isChecked) {
+        settingsViewModel.loadNotificationSetting()
+
+        settingsViewModel.isPeriodicTaskEnabled.observe(this) { isEnabled ->
+            binding.checkBox.isChecked = isEnabled
+        }
+
+        binding.checkBox.setOnCheckedChangeListener { _, isChecked ->
+            settingsViewModel.saveNotificationSetting(isChecked)
+            if (isChecked) {
                 startPeriodicTask()
-            } else cancelPeriodicTask()
+            } else {
+                cancelPeriodicTask()
+            }
         }
     }
 
