@@ -30,7 +30,7 @@ class SettingPreferences private constructor(private val dataStore: DataStore<Pr
 
     fun notificationSetting(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
-            preferences[NOTIFICATION_KEY] ?: false // Default to false if not set
+            preferences[NOTIFICATION_KEY] ?: false
         }
     }
 

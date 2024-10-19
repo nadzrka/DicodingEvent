@@ -1,22 +1,15 @@
-@file:Suppress("unused", "RedundantSuppression")
-
 package com.nadzirakarimantika.dicodingevent.ui.setting
 
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
-import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.databinding.ActivitySettingBinding
@@ -24,7 +17,6 @@ import com.nadzirakarimantika.dicodingevent.ui.home.EventWorker
 import java.util.concurrent.TimeUnit
 
 class SettingActivity : AppCompatActivity() {
-    private lateinit var periodicWorkRequest: PeriodicWorkRequest
     private lateinit var workManager: WorkManager
     private lateinit var binding: ActivitySettingBinding
 
@@ -48,9 +40,10 @@ class SettingActivity : AppCompatActivity() {
             requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
 
+        workManager = WorkManager.getInstance(this)
+
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(
@@ -67,24 +60,16 @@ class SettingActivity : AppCompatActivity() {
         val switchTheme = findViewById<SwitchMaterial>(R.id.switch_theme)
 
         val pref = SettingPreferences.getInstance(application.dataStore)
-
         val settingsViewModel = ViewModelProvider(this, SettingViewModelFactory(pref))[SettingsViewModel::class.java]
 
         settingsViewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
-            if (isDarkModeActive) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                switchTheme.isChecked = true
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                switchTheme.isChecked = false
-            }
+            AppCompatDelegate.setDefaultNightMode(if (isDarkModeActive) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
+            switchTheme.isChecked = isDarkModeActive
         }
 
-        switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+        switchTheme.setOnCheckedChangeListener { _, isChecked ->
             settingsViewModel.saveThemeSetting(isChecked)
         }
-
-        workManager = WorkManager.getInstance(this)
 
         settingsViewModel.loadNotificationSetting()
 
@@ -95,28 +80,33 @@ class SettingActivity : AppCompatActivity() {
         binding.checkBox.setOnCheckedChangeListener { _, isChecked ->
             settingsViewModel.saveNotificationSetting(isChecked)
             if (isChecked) {
-                startPeriodicTask()
+                schedulePeriodicEventNotification()
             } else {
                 cancelPeriodicTask()
             }
         }
     }
 
-    private fun startPeriodicTask() {
-        val data = Data.Builder()
-            .build()
+    private fun schedulePeriodicEventNotification() {
+        val data = Data.Builder().build()
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-        periodicWorkRequest = PeriodicWorkRequest.Builder(EventWorker::class.java, 1, TimeUnit.DAYS)
+
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(EventWorker::class.java, 1, TimeUnit.DAYS)
             .setInputData(data)
             .setConstraints(constraints)
             .build()
-        workManager.enqueue(periodicWorkRequest)
 
+        workManager.enqueueUniquePeriodicWork(
+            "EventNotification",
+            ExistingPeriodicWorkPolicy.UPDATE,
+            periodicWorkRequest
+        )
     }
+
     private fun cancelPeriodicTask() {
-        workManager.cancelWorkById(periodicWorkRequest.id)
+        workManager.cancelUniqueWork("EventNotification")
     }
 
     override fun onSupportNavigateUp(): Boolean {
