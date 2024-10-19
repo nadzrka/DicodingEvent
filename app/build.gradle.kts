@@ -47,6 +47,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.room.ktx)
     implementation(libs.okhttp)
     implementation(libs.androidx.work.runtime)
     implementation(libs.android.async.http    )

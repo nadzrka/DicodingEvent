@@ -22,13 +22,10 @@ interface EventDao {
     fun getBookmarkedEvent(): LiveData<List<EventEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertEvent(event: List<EventEntity>)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertFavEvent(event: EventEntity)
+    suspend fun insertEvent(event: List<EventEntity>)
 
     @Update
-    fun updateEvent(event: EventEntity)
+    suspend fun updateEvent(event: EventEntity)
 
     @Query("SELECT * FROM event WHERE name LIKE :query AND status = 1")
     fun searchUpcomingEvents(query: String): LiveData<List<EventEntity>>
@@ -37,23 +34,23 @@ interface EventDao {
     fun searchFinishedEvents(query: String): LiveData<List<EventEntity>>
 
     @Query("DELETE FROM event WHERE bookmarked = 0")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Query("DELETE FROM event WHERE status = 1")
-    fun deleteUpcomingEvents()
+    suspend fun deleteUpcomingEvents()
 
     @Query("DELETE FROM event WHERE status = 1 OR status = 0")
-    fun deleteEvents()
+    suspend fun deleteEvents()
 
     @Query("DELETE FROM event WHERE status = 0")
-    fun deleteFinishedEvents()
+    suspend fun deleteFinishedEvents()
 
     @Query("SELECT * FROM event WHERE id = :eventId")
     fun getEventById(eventId: String): LiveData<EventEntity>
 
     @Query("SELECT EXISTS(SELECT * FROM event WHERE name = :title AND bookmarked = 1)")
-    fun isEventBookmarked(title: String): Boolean
+    suspend fun isEventBookmarked(title: String): Boolean
 
     @Query("SELECT EXISTS(SELECT * FROM event WHERE name = :title AND status = 1 OR status = 0)")
-    fun isEventActive(title: String): Boolean
+    suspend fun isEventActive(title: String): Boolean
 }

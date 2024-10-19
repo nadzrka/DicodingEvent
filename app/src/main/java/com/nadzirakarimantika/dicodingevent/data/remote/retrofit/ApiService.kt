@@ -4,33 +4,32 @@ package com.nadzirakarimantika.dicodingevent.data.remote.retrofit
 
 import com.nadzirakarimantika.dicodingevent.data.remote.response.DetailResponse
 import com.nadzirakarimantika.dicodingevent.data.remote.response.EventResponse
-import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
     @GET("https://event-api.dicoding.dev/events?active=1")
-    fun getUpcomingEvent(): Call<EventResponse>
+    suspend fun getUpcomingEvent(): EventResponse
 
     @GET("https://event-api.dicoding.dev/events?active=0")
-    fun getFinishedEvent(): Call<EventResponse>
+    suspend fun getFinishedEvent(): EventResponse
 
     @GET("https://event-api.dicoding.dev/events")
-    fun getEvent(): Call<EventResponse>
+    suspend fun getEvent()
 
     @GET("https://event-api.dicoding.dev/events/{id}")
-    fun getDetailEvent(@Path("id") eventId: String): Call<DetailResponse>
+    suspend fun getDetailEvent(@Path("id") eventId: String): DetailResponse
 
     @GET("events")
-    fun searchFinishedEvents(
+    suspend fun searchFinishedEvents(
         @Query("q") query: String,
         @Query("active") active: Int = 0
-    ): Call<EventResponse>
+    )
 
     @GET("events")
-    fun searchUpcomingEvents(
+    suspend fun searchUpcomingEvents(
         @Query("q") query: String,
         @Query("active") active: Int = 1
-    ): Call<EventResponse>
+    )
 }

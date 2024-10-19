@@ -42,9 +42,7 @@ class HomeActivity : AppCompatActivity() {
         toolbar.overflowIcon?.setTint(ContextCompat.getColor(this, R.color.white))
 
         val pref = SettingPreferences.getInstance(application.dataStore)
-        val settingsViewModel = ViewModelProvider(this, SettingViewModelFactory(pref)).get(
-            SettingsViewModel::class.java
-        )
+        val settingsViewModel = ViewModelProvider(this, SettingViewModelFactory(pref))[SettingsViewModel::class.java]
 
         settingsViewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
             if (isDarkModeActive) {

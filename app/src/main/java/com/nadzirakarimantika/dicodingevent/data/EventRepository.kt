@@ -2,20 +2,19 @@
 
 package com.nadzirakarimantika.dicodingevent.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
 import com.nadzirakarimantika.dicodingevent.data.local.room.EventDao
-import com.nadzirakarimantika.dicodingevent.data.remote.response.DetailResponse
 import com.nadzirakarimantika.dicodingevent.data.remote.response.Event
-import com.nadzirakarimantika.dicodingevent.data.remote.response.EventResponse
-import com.nadzirakarimantika.dicodingevent.data.remote.retrofit.ApiConfig
 import com.nadzirakarimantika.dicodingevent.data.remote.retrofit.ApiService
 import com.nadzirakarimantika.dicodingevent.utils.AppExecutors
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class EventRepository private constructor(
     private val apiService: ApiService,
@@ -30,116 +29,86 @@ class EventRepository private constructor(
 
     private val _detailEvent = MutableLiveData<Result<Event>>()
 
-    fun getFinishedEvents(): LiveData<Result<List<EventEntity>>> {
-        val result = MediatorLiveData<Result<List<EventEntity>>>()
-        result.value = Result.Loading
-        val client = apiService.getFinishedEvent()
-
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                if (response.isSuccessful) {
-                    val listEvents = response.body()?.listEvents
-                    val eventList = ArrayList<EventEntity>()
-                    appExecutors.diskIO.execute {
-                        listEvents?.forEach { event ->
-                            val isBookmarked = eventDao.isEventBookmarked(event.name)
-                            val events = EventEntity(
-                                event.name,
-                                event.beginTime,
-                                event.imageLogo,
-                                event.summary,
-                                event.ownerName,
-                                event.mediaCover,
-                                event.registrants,
-                                event.link,
-                                event.description,
-                                event.cityName,
-                                event.quota,
-                                event.id,
-                                event.endTime,
-                                event.category,
-                                isBookmarked,
-                                isActive = false
-                            )
-                            eventList.add(events)
-                        }
-
-                        eventDao.deleteFinishedEvents()
-                        eventDao.insertEvent(eventList)
-                    }
-                } else {
-                    result.postValue(Result.Error("Failed to fetch finished events: ${response.message()}"))
-                }
+    fun getFinishedEvents(): LiveData<Result<List<EventEntity>>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.getFinishedEvent()
+            val listEvents = response.listEvents
+            val eventList = listEvents.map { event ->
+                val isBookmarked = eventDao.isEventBookmarked(event.name)
+                EventEntity(
+                    event.name,
+                    event.beginTime,
+                    event.imageLogo,
+                    event.summary,
+                    event.ownerName,
+                    event.mediaCover,
+                    event.registrants,
+                    event.link,
+                    event.description,
+                    event.cityName,
+                    event.quota,
+                    event.id,
+                    event.endTime,
+                    event.category,
+                    isBookmarked,
+                    isActive = false
+                )
             }
 
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                result.postValue(Result.Error(t.message.toString()))
-            }
-        })
-
-        val localData = eventDao.getFinishedEvent()
-        result.addSource(localData) { newData: List<EventEntity> ->
-            result.value = Result.Success(newData)
+            eventDao.deleteFinishedEvents()
+            eventDao.insertEvent(eventList)
+        } catch (e: Exception) {
+            Log.d("NewsRepository", "getHeadlineNews: ${e.message.toString()}")
+            emit(Result.Error(e.message.toString()))
         }
-        return result
+
+        val localData: LiveData<Result<List<EventEntity>>> =
+            eventDao.getFinishedEvent().map { Result.Success(it) }
+        emitSource(localData)
     }
 
-    fun getUpcomingEvents(): LiveData<Result<List<EventEntity>>> {
-        val result = MediatorLiveData<Result<List<EventEntity>>>()
-        result.value = Result.Loading
-        val client = apiService.getUpcomingEvent()
-
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                if (response.isSuccessful) {
-                    val listEvents = response.body()?.listEvents
-                    val eventList = ArrayList<EventEntity>()
-                    appExecutors.diskIO.execute {
-                        listEvents?.forEach { event ->
-                            val isBookmarked = eventDao.isEventBookmarked(event.name)
-                            val events = EventEntity(
-                                event.name,
-                                event.beginTime,
-                                event.imageLogo,
-                                event.summary,
-                                event.ownerName,
-                                event.mediaCover,
-                                event.registrants,
-                                event.link,
-                                event.description,
-                                event.cityName,
-                                event.quota,
-                                event.id,
-                                event.endTime,
-                                event.category,
-                                isBookmarked,
-                                isActive = true
-                            )
-                            eventList.add(events)
-                        }
-
-                        eventDao.deleteUpcomingEvents()
-                        eventDao.insertEvent(eventList)
-                    }
-                } else {
-                    result.postValue(Result.Error("Failed to fetch upcoming events: ${response.message()}"))
-                }
+    fun getUpcomingEvents(): LiveData<Result<List<EventEntity>>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.getUpcomingEvent()
+            val listEvents = response.listEvents
+            val eventList = listEvents.map { event ->
+                val isBookmarked = eventDao.isEventBookmarked(event.name)
+                EventEntity(
+                    event.name,
+                    event.beginTime,
+                    event.imageLogo,
+                    event.summary,
+                    event.ownerName,
+                    event.mediaCover,
+                    event.registrants,
+                    event.link,
+                    event.description,
+                    event.cityName,
+                    event.quota,
+                    event.id,
+                    event.endTime,
+                    event.category,
+                    isBookmarked,
+                    isActive = true
+                )
             }
 
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                result.postValue(Result.Error(t.message.toString()))
-            }
-        })
-
-        val localData = eventDao.getUpcomingEvent()
-        result.addSource(localData) { newData: List<EventEntity> ->
-            result.value = Result.Success(newData)
+            eventDao.deleteUpcomingEvents()
+            eventDao.insertEvent(eventList)
+        } catch (e: Exception) {
+            Log.d("NewsRepository", "getHeadlineNews: ${e.message.toString()}")
+            emit(Result.Error(e.message.toString()))
         }
-        return result
+
+        val localData: LiveData<Result<List<EventEntity>>> =
+            eventDao.getUpcomingEvent().map { Result.Success(it) }
+        emitSource(localData)
     }
 
-    fun setBookmarkedEvent(event: EventEntity, bookmarkState: Boolean) {
-        appExecutors.diskIO.execute {
+    suspend fun setBookmarkedEvent(event: EventEntity, bookmarkState: Boolean) {
+        withContext(Dispatchers.IO) {
             event.isBookmarked = bookmarkState
             eventDao.updateEvent(event)
         }
@@ -179,54 +148,43 @@ class EventRepository private constructor(
         return result
     }
 
-    fun getDetailEvent(eventId : String): LiveData<Result<EventEntity>> {
-        val result = MediatorLiveData<Result<EventEntity>>()
-        result.value = Result.Loading
-        val client = ApiConfig.getApiService().getDetailEvent(eventId)
-
-        client.enqueue(object : Callback<DetailResponse> {
-            override fun onResponse(call: Call<DetailResponse>, response: Response<DetailResponse>) {
-                if (response.isSuccessful) {
-                    val eventDetail = response.body()?.event
-                    appExecutors.diskIO.execute {
-                        eventDetail?.let { event ->
-                            val isBookmarked = eventDao.isEventBookmarked(event.name)
-                            val eventEntity = EventEntity(
-                                event.name,
-                                event.beginTime,
-                                event.imageLogo,
-                                event.summary,
-                                event.ownerName,
-                                event.mediaCover,
-                                event.registrants,
-                                event.link,
-                                event.description,
-                                event.cityName,
-                                event.quota,
-                                event.id,
-                                event.endTime,
-                                event.category,
-                                isBookmarked,
-                                isActive = true
-                            )
-                            eventDao.insertEvent(listOf(eventEntity))
-                        }
-                    }
-                } else {
-                    result.postValue(Result.Error("Failed to fetch upcoming events: ${response.message()}"))
-                }
+    @Suppress("KotlinDeprecation")
+    fun getDetailEvent(eventId : String): LiveData<Result<EventEntity>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = apiService.getDetailEvent(eventId)
+            val eventDetail = response.event
+            eventDetail?.let { event ->
+                val isBookmarked = eventDao.isEventBookmarked(event.name)
+                val eventEntity = EventEntity(
+                    event.name,
+                    event.beginTime,
+                    event.imageLogo,
+                    event.summary,
+                    event.ownerName,
+                    event.mediaCover,
+                    event.registrants,
+                    event.link,
+                    event.description,
+                    event.cityName,
+                    event.quota,
+                    event.id,
+                    event.endTime,
+                    event.category,
+                    isBookmarked,
+                    isActive = true
+                )
+                eventDao.insertEvent(listOf(eventEntity))
             }
-
-            override fun onFailure(call: Call<DetailResponse>, t: Throwable) {
-                result.postValue(Result.Error(t.message.toString()))
-            }
-        })
-
-        val localData = eventDao.getEventById(eventId)
-        result.addSource(localData) { eventEntity ->
-            result.value = Result.Success(eventEntity)
         }
-        return result
+        catch (e: Exception) {
+            Log.d("NewsRepository", "getHeadlineNews: ${e.message.toString()}")
+            emit(Result.Error(e.message.toString()))
+        }
+        val localData = eventDao.getEventById(eventId).map { eventEntity ->
+            Result.Success(eventEntity) as Result<EventEntity>
+        }
+        emitSource(localData)
     }
 
     companion object {

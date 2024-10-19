@@ -9,6 +9,5 @@ class FavoriteViewModel(private val repository: EventRepository) : ViewModel() {
 
     fun findFavoriteEvent() = repository.getFavoriteEvents()
 
-
 }
 

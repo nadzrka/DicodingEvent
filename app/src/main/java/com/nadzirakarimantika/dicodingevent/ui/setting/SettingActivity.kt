@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -70,9 +69,7 @@ class SettingActivity : AppCompatActivity(), View.OnClickListener {
 
         val pref = SettingPreferences.getInstance(application.dataStore)
 
-        val settingsViewModel = ViewModelProvider(this, SettingViewModelFactory(pref)).get(
-            SettingsViewModel::class.java
-        )
+        val settingsViewModel = ViewModelProvider(this, SettingViewModelFactory(pref))[SettingsViewModel::class.java]
 
         settingsViewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
             if (isDarkModeActive) {
