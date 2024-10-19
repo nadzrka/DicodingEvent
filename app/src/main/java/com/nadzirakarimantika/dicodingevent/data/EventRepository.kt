@@ -2,7 +2,6 @@
 
 package com.nadzirakarimantika.dicodingevent.data
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -59,7 +58,6 @@ class EventRepository private constructor(
             eventDao.deleteFinishedEvents()
             eventDao.insertEvent(eventList)
         } catch (e: Exception) {
-            Log.d("NewsRepository", "getHeadlineNews: ${e.message.toString()}")
             emit(Result.Error(e.message.toString()))
         }
 
@@ -98,7 +96,6 @@ class EventRepository private constructor(
             eventDao.deleteUpcomingEvents()
             eventDao.insertEvent(eventList)
         } catch (e: Exception) {
-            Log.d("NewsRepository", "getHeadlineNews: ${e.message.toString()}")
             emit(Result.Error(e.message.toString()))
         }
 
@@ -178,7 +175,6 @@ class EventRepository private constructor(
             }
         }
         catch (e: Exception) {
-            Log.d("NewsRepository", "getHeadlineNews: ${e.message.toString()}")
             emit(Result.Error(e.message.toString()))
         }
         val localData = eventDao.getEventById(eventId).map { eventEntity ->
