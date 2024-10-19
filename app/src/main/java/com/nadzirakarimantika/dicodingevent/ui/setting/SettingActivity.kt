@@ -88,25 +88,23 @@ class SettingActivity : AppCompatActivity() {
     }
 
     private fun schedulePeriodicEventNotification() {
-        val data = Data.Builder().build()
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
         val periodicWorkRequest = PeriodicWorkRequest.Builder(EventWorker::class.java, 1, TimeUnit.DAYS)
-            .setInputData(data)
             .setConstraints(constraints)
             .build()
 
         workManager.enqueueUniquePeriodicWork(
-            "EventNotification",
-            ExistingPeriodicWorkPolicy.UPDATE,
+            "EventNotificationWork",
+            ExistingPeriodicWorkPolicy.KEEP,
             periodicWorkRequest
         )
     }
 
     private fun cancelPeriodicTask() {
-        workManager.cancelUniqueWork("EventNotification")
+        workManager.cancelUniqueWork("EventNotificationWork")
     }
 
     override fun onSupportNavigateUp(): Boolean {
