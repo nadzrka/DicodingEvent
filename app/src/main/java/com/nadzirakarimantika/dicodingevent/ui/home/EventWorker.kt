@@ -3,13 +3,13 @@ package com.nadzirakarimantika.dicodingevent.ui.home
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
+import com.nadzirakarimantika.dicodingevent.BuildConfig
 import com.nadzirakarimantika.dicodingevent.R
 import cz.msebera.android.httpclient.Header
 import org.json.JSONObject
@@ -30,7 +30,8 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
 
     private fun getCurrentEvent() {
         val client = AsyncHttpClient()
-        val url = "https://event-api.dicoding.dev/events?active=-1&limit=1"
+        val endpoint = "events?active=-1&limit=1"
+        val url = BuildConfig.BASE_URL + endpoint
         Log.d(TAG, "getCurrentEvent: $url")
 
         client.get(url, object : AsyncHttpResponseHandler() {
@@ -41,8 +42,8 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
                     val responseObject = JSONObject(result)
                     val name: String = responseObject.getJSONArray("listEvents").getJSONObject(0).getString("name")
                     val date: String = responseObject.getJSONArray("listEvents").getJSONObject(0).getString("beginTime")
-                    val title = "Upcoming Event: $name"
-                    val time = "Scheduled for: $date"
+                    val title = "Event yang akan datang: $name"
+                    val time = "Diadakan pada: $date"
                     showNotification(title, time)
                     Log.d(TAG, "onSuccess: Completed.")
                 } catch (e: Exception) {
@@ -67,11 +68,9 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH)
-            notification.setChannelId(CHANNEL_ID)
-            notificationManager.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH)
+        notification.setChannelId(CHANNEL_ID)
+        notificationManager.createNotificationChannel(channel)
 
         notificationManager.notify(NOTIFICATION_ID, notification.build())
     }

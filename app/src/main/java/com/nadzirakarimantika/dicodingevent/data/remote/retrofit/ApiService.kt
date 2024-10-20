@@ -9,27 +9,27 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    @GET("https://event-api.dicoding.dev/events?active=1")
+    @GET("events?active=1")
     suspend fun getUpcomingEvent(): EventResponse
 
-    @GET("https://event-api.dicoding.dev/events?active=0")
+    @GET("events?active=0")
     suspend fun getFinishedEvent(): EventResponse
 
-    @GET("https://event-api.dicoding.dev/events")
-    suspend fun getEvent()
+    @GET("events")
+    suspend fun getEvent(): EventResponse
 
-    @GET("https://event-api.dicoding.dev/events/{id}")
+    @GET("events/{id}")
     suspend fun getDetailEvent(@Path("id") eventId: String): DetailResponse
 
     @GET("events")
     suspend fun searchFinishedEvents(
         @Query("q") query: String,
         @Query("active") active: Int = 0
-    )
+    ): EventResponse
 
     @GET("events")
     suspend fun searchUpcomingEvents(
         @Query("q") query: String,
         @Query("active") active: Int = 1
-    )
+    ): EventResponse
 }

@@ -77,6 +77,28 @@ class UpcomingFragment : Fragment() {
         upcomingViewModel.findUpcomingEvents()
     }
 
+    private fun setupSearchView() {
+        val searchView = binding.searchView
+        searchView.visibility = View.VISIBLE
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (!query.isNullOrEmpty()) {
+                    observeSearchUpcomingEvents(query)
+                } else {
+                    observeSearchUpcomingEvents("")
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText.isNullOrEmpty()) {
+                    observeSearchUpcomingEvents("")
+                }
+                return true
+            }
+        })
+    }
+
     private fun observeSearchUpcomingEvents(query: String) {
         upcomingViewModel.searchUpcomingEvents(query).observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -103,28 +125,6 @@ class UpcomingFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun setupSearchView() {
-        val searchView = binding.searchView
-        searchView.visibility = View.VISIBLE
-        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (!query.isNullOrEmpty()) {
-                    observeSearchUpcomingEvents(query)
-                } else {
-                    observeSearchUpcomingEvents("")
-                }
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText.isNullOrEmpty()) {
-                    observeSearchUpcomingEvents("")
-                }
-                return true
-            }
-        })
     }
 
     private fun navigateToDetailEvent(event: EventEntity) {
