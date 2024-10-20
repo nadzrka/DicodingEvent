@@ -1,22 +1,18 @@
-@file:Suppress("unused", "RedundantSuppression")
-
 package com.nadzirakarimantika.dicodingevent.ui.home
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
-import com.loopj.android.http.SyncHttpClient
 import com.nadzirakarimantika.dicodingevent.R
 import cz.msebera.android.httpclient.Header
 import org.json.JSONObject
-import java.util.concurrent.CountDownLatch
 
 class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
@@ -26,20 +22,16 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
         const val CHANNEL_ID = "channel_01"
         const val CHANNEL_NAME = "dicoding channel"
     }
-    private var resultStatus: Result? = null
 
     override fun doWork(): Result {
-        return getCurrentEvent()
+        getCurrentEvent()
+        return Result.success()
     }
 
-    private fun getCurrentEvent(): Result {
-        Looper.prepare()
-        val client = SyncHttpClient()
+    private fun getCurrentEvent() {
+        val client = AsyncHttpClient()
         val url = "https://event-api.dicoding.dev/events?active=-1&limit=1"
         Log.d(TAG, "getCurrentEvent: $url")
-
-        val latch = CountDownLatch(1)
-        var resultStatus: Result = Result.failure()
 
         client.get(url, object : AsyncHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<Header?>?, responseBody: ByteArray) {
@@ -49,29 +41,21 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
                     val responseObject = JSONObject(result)
                     val name: String = responseObject.getJSONArray("listEvents").getJSONObject(0).getString("name")
                     val date: String = responseObject.getJSONArray("listEvents").getJSONObject(0).getString("beginTime")
-                    val title = "Event yang akan datang: $name"
-                    val time = "Diadakan pada: $date"
+                    val title = "Upcoming Event: $name"
+                    val time = "Scheduled for: $date"
                     showNotification(title, time)
-                    Log.d(TAG, "onSuccess: Selesai.....")
-                    resultStatus = Result.success()
+                    Log.d(TAG, "onSuccess: Completed.")
                 } catch (e: Exception) {
-                    showNotification("Get Current Weather Not Success", e.message)
-                    Log.d(TAG, "onSuccess: Gagal.....")
-                    resultStatus = Result.failure()
+                    showNotification("Event Retrieval Failed", e.message)
+                    Log.e(TAG, "onSuccess: Failed to parse the event data.", e)
                 }
-                latch.countDown() // Signal that the operation is done
             }
 
             override fun onFailure(statusCode: Int, headers: Array<Header?>?, responseBody: ByteArray?, error: Throwable) {
-                Log.d(TAG, "onFailure: Gagal.....")
-                showNotification("Get Current Event Failed", error.message)
-                resultStatus = Result.failure()
-                latch.countDown()
+                Log.e(TAG, "onFailure: Failed to retrieve the event.", error)
+                showNotification("Event Retrieval Failed", error.message)
             }
         })
-
-        latch.await()
-        return resultStatus
     }
 
     private fun showNotification(title: String, summary: String?) {
@@ -82,11 +66,13 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
             .setContentText(summary)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH)
             notification.setChannelId(CHANNEL_ID)
             notificationManager.createNotificationChannel(channel)
         }
+
         notificationManager.notify(NOTIFICATION_ID, notification.build())
     }
 }
