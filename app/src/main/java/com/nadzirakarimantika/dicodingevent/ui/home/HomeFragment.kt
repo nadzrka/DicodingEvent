@@ -54,6 +54,29 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun setupSearchView() {
+        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (!query.isNullOrEmpty()) {
+                    handleSearchUpcomingResult(query)
+                    handleSearchFinishedResult(query)
+                } else {
+                    handleSearchFinishedResult("")
+                    handleSearchUpcomingResult("")
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(query: String?): Boolean {
+                if (query.isNullOrEmpty()) {
+                    handleSearchFinishedResult("")
+                    handleSearchUpcomingResult("")
+                }
+                return true
+            }
+        })
+    }
+
     private fun observeEvents() {
         homeViewModel.getUpcomingEvents().observe(viewLifecycleOwner) { result ->
             handleEventResult(result, eventHorizontalAdapter)
@@ -81,29 +104,6 @@ class HomeFragment : Fragment() {
                 binding.tvNoEvent.visibility = View.GONE
             }
         }
-    }
-
-    private fun setupSearchView() {
-        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (!query.isNullOrEmpty()) {
-                    handleSearchUpcomingResult(query)
-                    handleSearchFinishedResult(query)
-                } else {
-                    handleSearchFinishedResult("")
-                    handleSearchUpcomingResult("")
-                }
-                return true
-            }
-
-            override fun onQueryTextChange(query: String?): Boolean {
-                if (query.isNullOrEmpty()) {
-                    handleSearchFinishedResult("")
-                    handleSearchUpcomingResult("")
-                }
-                return true
-            }
-        })
     }
 
     private fun handleSearchUpcomingResult(query: String) {
