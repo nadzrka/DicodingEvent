@@ -13,6 +13,8 @@ import androidx.work.*
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.databinding.ActivitySettingBinding
+import com.nadzirakarimantika.dicodingevent.ui.home.EventWorker
+import java.util.concurrent.TimeUnit
 
 class SettingActivity : AppCompatActivity() {
     private lateinit var workManager: WorkManager
@@ -77,7 +79,32 @@ class SettingActivity : AppCompatActivity() {
 
         switchNotifications.setOnCheckedChangeListener { _, isChecked ->
             settingsViewModel.saveNotificationSetting(isChecked)
+            if (isChecked) {
+                schedulePeriodicEventNotification()
+            } else {
+                cancelPeriodicTask()
+            }
         }
+    }
+
+    private fun schedulePeriodicEventNotification() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(EventWorker::class.java, 1, TimeUnit.DAYS)
+            .setConstraints(constraints)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            "EventNotificationWork",
+            ExistingPeriodicWorkPolicy.UPDATE,
+            periodicWorkRequest
+        )
+    }
+
+    private fun cancelPeriodicTask() {
+        workManager.cancelUniqueWork("EventNotificationWork")
     }
 
     override fun onSupportNavigateUp(): Boolean {
