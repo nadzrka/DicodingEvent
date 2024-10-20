@@ -11,14 +11,12 @@ import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
 import com.nadzirakarimantika.dicodingevent.data.local.room.EventDao
 import com.nadzirakarimantika.dicodingevent.data.remote.response.Event
 import com.nadzirakarimantika.dicodingevent.data.remote.retrofit.ApiService
-import com.nadzirakarimantika.dicodingevent.utils.AppExecutors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class EventRepository private constructor(
     private val apiService: ApiService,
-    private val eventDao: EventDao,
-    private val appExecutors: AppExecutors
+    private val eventDao: EventDao
 ) {
     private val _showToastMessage = MutableLiveData<String>()
     val showToastMessage: LiveData<String> get() = _showToastMessage
@@ -188,11 +186,10 @@ class EventRepository private constructor(
         private var instance: EventRepository? = null
         fun getInstance(
             apiService: ApiService,
-            eventDao: EventDao,
-            appExecutors: AppExecutors
+            eventDao: EventDao
         ): EventRepository =
             instance ?: synchronized(this) {
-                instance ?: EventRepository(apiService, eventDao, appExecutors)
+                instance ?: EventRepository(apiService, eventDao)
             }.also { instance = it }
     }
 }
