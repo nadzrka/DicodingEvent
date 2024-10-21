@@ -77,6 +77,10 @@ class SettingActivity : AppCompatActivity() {
             switchNotifications.isChecked = isNotificationActive
         }
 
+        settingsViewModel.getNotificationSettings().observe(this) { isNotificationActive: Boolean ->
+            switchNotifications.isChecked = isNotificationActive
+        }
+
         switchNotifications.setOnCheckedChangeListener { _, isChecked ->
             settingsViewModel.saveNotificationSetting(isChecked)
             if (isChecked) {
@@ -98,7 +102,7 @@ class SettingActivity : AppCompatActivity() {
 
         workManager.enqueueUniquePeriodicWork(
             "EventNotificationWork",
-            ExistingPeriodicWorkPolicy.UPDATE,
+            ExistingPeriodicWorkPolicy.KEEP,
             periodicWorkRequest
         )
     }
