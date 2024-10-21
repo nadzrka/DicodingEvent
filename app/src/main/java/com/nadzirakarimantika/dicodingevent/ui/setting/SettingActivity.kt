@@ -103,7 +103,7 @@ class SettingActivity : AppCompatActivity() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val periodicWorkRequest = PeriodicWorkRequest.Builder(EventWorker::class.java, 15, TimeUnit.MINUTES)
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(EventWorker::class.java, 1, TimeUnit.DAYS)
             .setConstraints(constraints)
             .build()
 
