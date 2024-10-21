@@ -141,12 +141,12 @@ class HomeFragment : Fragment() {
         homeViewModel.searchFinishedEvents(query).observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
+                    binding.progressBar2.visibility = View.VISIBLE
                     binding.tvNoEvent2.visibility = View.GONE
                 }
 
                 is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
+                    binding.progressBar2.visibility = View.GONE
                     val eventData = result.data.take(5)
                     if (eventData.isEmpty()) {
                         binding.tvNoEvent2.visibility = View.VISIBLE
@@ -159,7 +159,7 @@ class HomeFragment : Fragment() {
                 }
 
                 is Result.Error -> {
-                    binding.progressBar.visibility = View.GONE
+                    binding.progressBar2.visibility = View.GONE
                     binding.rvEvent.visibility = View.GONE
                     binding.tvNoEvent2.visibility = View.VISIBLE
                 }
