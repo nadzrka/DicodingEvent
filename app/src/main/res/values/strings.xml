@@ -32,4 +32,6 @@
     <string name="mode">Dark mode</string>
     <string name="Setting">Setting</string>
     <string name="notification">Notification</string>
+    <string name="notifications_permission_granted">Notifications permission granted</string>
+    <string name="notifications_permission_rejected">Notifications permission rejected</string>
 </resources>

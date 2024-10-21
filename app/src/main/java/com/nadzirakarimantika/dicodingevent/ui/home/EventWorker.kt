@@ -55,12 +55,11 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
                     Log.d(TAG, "onSuccess: Selesai.....")
                     resultStatus = Result.success()
                 } catch (e: Exception) {
-                    showNotification("Get Current Weather Not Success", e.message)
+                    showNotification("Get Current Event Not Success", e.message)
                     Log.d(TAG, "onSuccess: Gagal.....")
                     resultStatus = Result.failure()
                 }
-                latch.countDown() // Signal that the operation is done
-            }
+                latch.countDown()             }
 
             override fun onFailure(statusCode: Int, headers: Array<Header?>?, responseBody: ByteArray?, error: Throwable) {
                 Log.d(TAG, "onFailure: Gagal.....")

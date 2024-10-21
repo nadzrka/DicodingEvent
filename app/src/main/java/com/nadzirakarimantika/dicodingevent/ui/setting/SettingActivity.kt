@@ -1,9 +1,11 @@
 package com.nadzirakarimantika.dicodingevent.ui.setting
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,9 +29,11 @@ class SettingActivity : AppCompatActivity() {
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                Toast.makeText(this, "Notifications permission granted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,
+                    getString(R.string.notifications_permission_granted), Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Notifications permission rejected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,
+                    getString(R.string.notifications_permission_rejected), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -42,9 +46,14 @@ class SettingActivity : AppCompatActivity() {
             requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
 
+        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        val packageName = packageName
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-            startActivity(intent)
+            if (!powerManager.isIgnoringBatteryOptimizations(packageName)) {
+                val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                startActivity(intent)
+            }
         }
 
         workManager = WorkManager.getInstance(this)
@@ -103,7 +112,7 @@ class SettingActivity : AppCompatActivity() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val periodicWorkRequest = PeriodicWorkRequest.Builder(EventWorker::class.java, 1, TimeUnit.DAYS)
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(EventWorker::class.java, 15, TimeUnit.MINUTES)
             .setConstraints(constraints)
             .build()
 
