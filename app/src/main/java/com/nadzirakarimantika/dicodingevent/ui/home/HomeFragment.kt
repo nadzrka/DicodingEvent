@@ -92,6 +92,7 @@ class HomeFragment : Fragment() {
             is Result.Loading -> {
                 binding.tvNoEvent.visibility = View.GONE
                 binding.progressBar.visibility = View.VISIBLE
+                binding.progressBar2.visibility = View.VISIBLE
             }
             is Result.Success -> {
                 val eventData = result.data.take(5)

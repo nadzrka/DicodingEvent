@@ -61,14 +61,6 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        settingsViewModel.getNotificationSettings().observe(this) { isNotificationActive: Boolean ->
-            if (isNotificationActive) {
-                schedulePeriodicEventNotification()
-            } else {
-                cancelPeriodicTask()
-            }
-        }
-
         if (!isConnectedToInternet()) {
             Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
         }
@@ -94,33 +86,13 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.about_page -> {
+            R.id.setting_page -> {
                 val intent = Intent(this, SettingActivity::class.java)
                 startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun schedulePeriodicEventNotification() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val periodicWorkRequest = PeriodicWorkRequest.Builder(EventWorker::class.java, 1, TimeUnit.DAYS)
-            .setConstraints(constraints)
-            .build()
-
-        workManager.enqueueUniquePeriodicWork(
-            "EventNotificationWork",
-            ExistingPeriodicWorkPolicy.KEEP,
-            periodicWorkRequest
-        )
-    }
-
-    private fun cancelPeriodicTask() {
-        workManager.cancelUniqueWork("EventNotificationWork")
     }
 
     private fun isConnectedToInternet(): Boolean {
