@@ -30,13 +30,13 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        setupRecyclerViews()
-        setupSearchView()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecyclerViews()
+        setupSearchView()
         observeEvents()
     }
 
@@ -55,26 +55,21 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupSearchView() {
-        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (!query.isNullOrEmpty()) {
-                    handleSearchUpcomingResult(query)
-                    handleSearchFinishedResult(query)
-                } else {
-                    handleSearchFinishedResult("")
-                    handleSearchUpcomingResult("")
+        binding.searchView.apply {
+            visibility = View.VISIBLE
+            setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    (query.orEmpty())
+                    return true
                 }
-                return true
-            }
 
-            override fun onQueryTextChange(query: String?): Boolean {
-                if (query.isNullOrEmpty()) {
-                    handleSearchFinishedResult("")
-                    handleSearchUpcomingResult("")
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    observeSearchUpcomingEvents(newText.orEmpty())
+                    observeSearchFinishedEvents(newText.orEmpty())
+                    return true
                 }
-                return true
-            }
-        })
+            })
+        }
     }
 
     private fun observeEvents() {
@@ -107,7 +102,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun handleSearchUpcomingResult(query: String) {
+    private fun observeSearchUpcomingEvents(query: String) {
         homeViewModel.searchUpcomingEvents(query).observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Loading -> {
@@ -137,7 +132,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun handleSearchFinishedResult(query: String) {
+    private fun observeSearchFinishedEvents(query: String) {
         homeViewModel.searchFinishedEvents(query).observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Loading -> {

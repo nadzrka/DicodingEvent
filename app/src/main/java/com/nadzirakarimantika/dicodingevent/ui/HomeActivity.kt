@@ -19,20 +19,14 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.databinding.ActivityHomeBinding
-import com.nadzirakarimantika.dicodingevent.ui.home.EventWorker
 import com.nadzirakarimantika.dicodingevent.ui.setting.SettingActivity
 import com.nadzirakarimantika.dicodingevent.ui.setting.SettingPreferences
 import com.nadzirakarimantika.dicodingevent.ui.setting.SettingViewModelFactory
 import com.nadzirakarimantika.dicodingevent.ui.setting.SettingsViewModel
 import com.nadzirakarimantika.dicodingevent.ui.setting.dataStore
-import java.util.concurrent.TimeUnit
 
 class HomeActivity : AppCompatActivity() {
 
