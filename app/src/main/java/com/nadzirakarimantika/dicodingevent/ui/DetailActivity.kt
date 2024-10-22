@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import androidx.core.text.HtmlCompat
+import com.bumptech.glide.request.RequestOptions
 import com.nadzirakarimantika.dicodingevent.R
 import com.nadzirakarimantika.dicodingevent.data.Result
 import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
@@ -105,6 +106,12 @@ class DetailActivity : AppCompatActivity() {
 
         Glide.with(this)
             .load(event.mediaCover)
+            .apply(
+                RequestOptions()
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.placeholder)
+                    .fitCenter()
+            )
             .into(binding.imageView)
     }
 

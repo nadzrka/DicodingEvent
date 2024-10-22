@@ -35,7 +35,7 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
     private fun getCurrentEvent(): Result {
         Looper.prepare()
         val client = SyncHttpClient()
-        val url = "https://event-api.dicoding.dev/events?active=-1&limit=1"
+        val url = "https://event-api.dicoding.dev/events?active=1"
         Log.d(TAG, "getCurrentEvent: $url")
 
         val latch = CountDownLatch(1)
@@ -47,22 +47,46 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
                 Log.d(TAG, result)
                 try {
                     val responseObject = JSONObject(result)
-                    val name: String = responseObject.getJSONArray("listEvents").getJSONObject(0).getString("name")
-                    val date: String = responseObject.getJSONArray("listEvents").getJSONObject(0).getString("beginTime")
-                    val title = "Event yang akan datang: $name"
-                    val time = "Diadakan pada: $date"
-                    showNotification(title, time)
-                    Log.d(TAG, "onSuccess: Selesai.....")
-                    resultStatus = Result.success()
+                    val eventsArray = responseObject.getJSONArray("listEvents")
+
+                    val futureEvents = mutableListOf<JSONObject>()
+                    for (i in 0 until eventsArray.length()) {
+                        val event = eventsArray.getJSONObject(i)
+                        val date = event.getString("beginTime")
+                        val eventDateMillis = parseDateToMillis(date)
+
+                        if (eventDateMillis > System.currentTimeMillis()) {
+                            futureEvents.add(event)
+                        }
+                    }
+
+                    val closestEvent = futureEvents
+                        .sortedBy { parseDateToMillis(it.getString("beginTime")) }
+                        .take(1)
+                        .firstOrNull()
+
+                    if (closestEvent != null) {
+                        val name: String = closestEvent.getString("name")
+                        val date: String = closestEvent.getString("beginTime")
+                        val title = "Upcoming Event: $name"
+                        val time = "Held on: $date"
+                        showNotification(title, time)
+                        Log.d(TAG, "onSuccess: Found closest event.....")
+                        resultStatus = Result.success()
+                    } else {
+                        showNotification("No Upcoming Events", "There are no upcoming events at this time.")
+                        resultStatus = Result.failure()
+                    }
                 } catch (e: Exception) {
                     showNotification("Get Current Event Not Success", e.message)
-                    Log.d(TAG, "onSuccess: Gagal.....")
+                    Log.d(TAG, "onSuccess: Failed.....")
                     resultStatus = Result.failure()
                 }
-                latch.countDown()             }
+                latch.countDown()
+            }
 
             override fun onFailure(statusCode: Int, headers: Array<Header?>?, responseBody: ByteArray?, error: Throwable) {
-                Log.d(TAG, "onFailure: Gagal.....")
+                Log.d(TAG, "onFailure: Failed.....")
                 showNotification("Get Current Event Failed", error.message)
                 resultStatus = Result.failure()
                 latch.countDown()
@@ -71,6 +95,17 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
 
         latch.await()
         return resultStatus
+    }
+
+
+    private fun parseDateToMillis(dateString: String): Long {
+        val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault())
+        return try {
+            val date = dateFormat.parse(dateString)
+            date?.time ?: Long.MAX_VALUE
+        } catch (e: Exception) {
+            Long.MAX_VALUE
+        }
     }
 
     private fun showNotification(title: String, summary: String?) {

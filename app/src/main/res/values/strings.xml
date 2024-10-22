@@ -34,4 +34,5 @@
     <string name="notification">Notification</string>
     <string name="notifications_permission_granted">Notifications permission granted</string>
     <string name="notifications_permission_rejected">Notifications permission rejected</string>
+    <string name="error_loading_events_please_try_again">Error loading events. Please try again.</string>
 </resources>
