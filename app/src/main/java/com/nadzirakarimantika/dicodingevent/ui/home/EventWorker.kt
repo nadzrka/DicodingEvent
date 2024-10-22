@@ -13,6 +13,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.loopj.android.http.AsyncHttpResponseHandler
 import com.loopj.android.http.SyncHttpClient
+import com.nadzirakarimantika.dicodingevent.BuildConfig
 import com.nadzirakarimantika.dicodingevent.R
 import cz.msebera.android.httpclient.Header
 import org.json.JSONObject
@@ -35,7 +36,8 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
     private fun getCurrentEvent(): Result {
         Looper.prepare()
         val client = SyncHttpClient()
-        val url = "https://event-api.dicoding.dev/events?active=1"
+        val baseUrl = BuildConfig.BASE_URL
+        val url = "${baseUrl}events?active=1"
         Log.d(TAG, "getCurrentEvent: $url")
 
         val latch = CountDownLatch(1)
