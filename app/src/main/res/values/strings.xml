@@ -20,7 +20,6 @@
     <string name="event_city">event city</string>
     <string name="detail_event">Detail Event</string>
     <string name="no_internet_connection">No internet connection</string>
-    <string name="no_events_found">No events found</string>
     <string name="event_favorite">Favorite</string>
     <string name="title_favorite">Favorite Event</string>
     <string name="added_to_favorite">Added to favorite</string>
@@ -34,5 +33,5 @@
     <string name="notification">Notification</string>
     <string name="notifications_permission_granted">Notifications permission granted</string>
     <string name="notifications_permission_rejected">Notifications permission rejected</string>
-    <string name="error_loading_events_please_try_again">Error loading events. Please try again.</string>
+    <string name="no_events_found">No events found</string>
 </resources>
