@@ -79,6 +79,8 @@ class EventWorker(context: Context, workerParams: WorkerParameters) : Worker(con
             .setSmallIcon(R.drawable.baseline_notifications_24)
             .setContentTitle(title)
             .setContentText(summary)
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText(summary))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
