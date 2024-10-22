@@ -8,17 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nadzirakarimantika.dicodingevent.data.Result
 import com.nadzirakarimantika.dicodingevent.data.local.entity.EventEntity
 import com.nadzirakarimantika.dicodingevent.databinding.FragmentFavoriteBinding
+import com.nadzirakarimantika.dicodingevent.ui.BaseFragment
 import com.nadzirakarimantika.dicodingevent.ui.DetailActivity
 import com.nadzirakarimantika.dicodingevent.ui.EventAdapter
 import com.nadzirakarimantika.dicodingevent.ui.ViewModelFactory
 
-class FavoriteFragment : Fragment() {
+class FavoriteFragment : BaseFragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
@@ -36,6 +36,8 @@ class FavoriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        checkInternetConnection()
 
         eventAdapter = EventAdapter { event ->
             navigateToDetailEvent(event)
