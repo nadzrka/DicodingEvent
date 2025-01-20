@@ -20,7 +20,7 @@ import com.nadzirakarimantika.dicodingevent.ui.ViewModelFactory
 class UpcomingFragment : BaseFragment() {
 
     private var _binding: FragmentUpcomingBinding? = null
-    private val binding get() = _binding!!
+    private val binding: FragmentUpcomingBinding? get() = _binding!!
     private lateinit var eventAdapter: EventAdapter
     private val upcomingViewModel: UpcomingViewModel by viewModels { ViewModelFactory.getInstance(requireActivity()) }
 
@@ -28,9 +28,9 @@ class UpcomingFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         _binding = FragmentUpcomingBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,14 +43,14 @@ class UpcomingFragment : BaseFragment() {
 
     private fun setupRecyclerView() {
         eventAdapter = EventAdapter { navigateToDetailEvent(it) }
-        binding.rvEvent.apply {
+        binding?.rvEvent?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = eventAdapter
         }
     }
 
     private fun setupSearchView() {
-        binding.searchView.apply {
+        binding?.searchView?.apply {
             visibility = View.VISIBLE
             setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
@@ -90,25 +90,33 @@ class UpcomingFragment : BaseFragment() {
     }
 
     private fun showLoading(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        binding.tvNoEvent.visibility = if (isLoading) View.GONE else binding.tvNoEvent.visibility
+        binding?.apply {
+            progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            tvNoEvent.visibility = if (isLoading) View.GONE else binding?.tvNoEvent?.visibility!!
+        }
     }
 
     private fun updateEventList(eventData: List<EventEntity>) {
         if (eventData.isEmpty()) {
-            binding.tvNoEvent.visibility = View.VISIBLE
-            binding.rvEvent.visibility = View.GONE
+            binding?.apply {
+                tvNoEvent.visibility = View.VISIBLE
+                rvEvent.visibility = View.GONE
+            }
         } else {
-            binding.tvNoEvent.visibility = View.GONE
-            binding.rvEvent.visibility = View.VISIBLE
+            binding?.apply {
+                tvNoEvent.visibility = View.GONE
+                rvEvent.visibility = View.VISIBLE
+            }
             eventAdapter.submitList(eventData)
         }
     }
 
     private fun showError() {
-        binding.progressBar.visibility = View.GONE
-        binding.rvEvent.visibility = View.GONE
-        binding.tvNoEvent.visibility = View.VISIBLE
+        binding?.apply {
+            progressBar.visibility = View.GONE
+            rvEvent.visibility = View.GONE
+            tvNoEvent.visibility = View.VISIBLE
+        }
     }
 
     private fun navigateToDetailEvent(event: EventEntity) {

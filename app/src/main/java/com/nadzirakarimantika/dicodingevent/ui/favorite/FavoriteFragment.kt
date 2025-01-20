@@ -21,7 +21,7 @@ import com.nadzirakarimantika.dicodingevent.ui.ViewModelFactory
 class FavoriteFragment : BaseFragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
-    private val binding get() = _binding!!
+    private val binding: FragmentFavoriteBinding? get() = _binding
     private lateinit var eventAdapter: EventAdapter
     private val favoriteViewModel: FavoriteViewModel by viewModels { ViewModelFactory.getInstance(requireActivity()) }
 
@@ -29,9 +29,9 @@ class FavoriteFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,8 +43,8 @@ class FavoriteFragment : BaseFragment() {
             navigateToDetailEvent(event)
         }
 
-        binding.rvEvent.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvEvent.adapter = eventAdapter
+        binding?.rvEvent?.layoutManager = LinearLayoutManager(requireContext())
+        binding?.rvEvent?.adapter = eventAdapter
 
         observeFavoriteEvents()
 
@@ -59,25 +59,34 @@ class FavoriteFragment : BaseFragment() {
     private fun handleEventResult(result: Result<List<EventEntity>>, adapter: EventAdapter) {
         when (result) {
             is Result.Loading -> {
-                binding.progressBar.visibility = View.VISIBLE
-                binding.tvNoEvent.visibility = View.GONE
+                binding?.apply {
+                    progressBar.visibility = View.VISIBLE
+                    tvNoEvent.visibility = View.GONE
+                }
+
             }
             is Result.Success -> {
-                binding.progressBar.visibility = View.GONE
+                binding?.progressBar?.visibility = View.GONE
                 val eventData = result.data
                 if (eventData.isEmpty()) {
-                    binding.tvNoEvent.visibility = View.VISIBLE
-                    binding.rvEvent.visibility = View.GONE
+                    binding?.apply {
+                        tvNoEvent.visibility = View.VISIBLE
+                        rvEvent.visibility = View.GONE
+                    }
                 } else {
-                    binding.tvNoEvent.visibility = View.GONE
-                    binding.rvEvent.visibility = View.VISIBLE
+                    binding?.apply {
+                        tvNoEvent.visibility = View.GONE
+                        rvEvent.visibility = View.VISIBLE
+                    }
                     adapter.submitList(eventData)
                 }
             }
             is Result.Error -> {
-                binding.progressBar.visibility = View.GONE
-                binding.tvNoEvent.visibility = View.VISIBLE
-                binding.rvEvent.visibility = View.GONE
+                binding?.apply {
+                    progressBar.visibility = View.GONE
+                    tvNoEvent.visibility = View.VISIBLE
+                    rvEvent.visibility = View.GONE
+                }
                 Toast.makeText(
                     context,
                     result.error,

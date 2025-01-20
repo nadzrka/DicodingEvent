@@ -2,6 +2,7 @@
 
 package com.nadzirakarimantika.dicodingevent.data.remote.retrofit
 
+import com.nadzirakarimantika.dicodingevent.BuildConfig
 import com.nadzirakarimantika.dicodingevent.BuildConfig.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,8 +12,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ApiConfig {
     companion object{
         fun getApiService(): ApiService {
-            val loggingInterceptor =
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+            val loggingInterceptor = if(BuildConfig.DEBUG) { HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY) }
+            else { HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE) }
             val client = OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
                 .build()

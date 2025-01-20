@@ -15,9 +15,6 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 
 class SettingPreferences private constructor(private val dataStore: DataStore<Preferences>) {
 
-    private val THEME_KEY = booleanPreferencesKey("theme_setting")
-    private val NOTIFICATION_KEY = booleanPreferencesKey("notification_setting")
-
     fun getThemeSetting(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
             preferences[THEME_KEY] ?: false
@@ -43,6 +40,11 @@ class SettingPreferences private constructor(private val dataStore: DataStore<Pr
     }
 
     companion object {
+        private const val THEME_SETTINGS_KEY_NAME = "theme_setting"
+        private const val NOTIFICATION_SETTINGS_KEY_NAME = "notification_setting"
+
+        val THEME_KEY = booleanPreferencesKey(THEME_SETTINGS_KEY_NAME)
+        val NOTIFICATION_KEY = booleanPreferencesKey(NOTIFICATION_SETTINGS_KEY_NAME)
         @Volatile
         private var INSTANCE: SettingPreferences? = null
 

@@ -19,7 +19,7 @@ import com.nadzirakarimantika.dicodingevent.ui.ViewModelFactory
 class HomeFragment : BaseFragment() {
 
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
+    private val binding: FragmentHomeBinding? get() = _binding
     private val homeViewModel: HomeViewModel by viewModels { ViewModelFactory.getInstance(requireActivity()) }
     private lateinit var eventHorizontalAdapter: EventHorizontalAdapter
     private lateinit var eventVerticalAdapter: EventVerticalAdapter
@@ -28,9 +28,9 @@ class HomeFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,20 +43,20 @@ class HomeFragment : BaseFragment() {
 
     private fun setupRecyclerViews() {
         eventHorizontalAdapter = EventHorizontalAdapter { navigateToDetailEvent(it) }
-        binding.rvUpcoming.apply {
+        binding?.rvUpcoming?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = eventHorizontalAdapter
         }
 
         eventVerticalAdapter = EventVerticalAdapter { navigateToDetailEvent(it) }
-        binding.rvEvent.apply {
+        binding?.rvEvent?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = eventVerticalAdapter
         }
     }
 
     private fun setupSearchView() {
-        binding.searchView.apply {
+        binding?.searchView?.apply {
             visibility = View.VISIBLE
             setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
@@ -86,19 +86,26 @@ class HomeFragment : BaseFragment() {
     private fun handleEventResult(result: Result<List<EventEntity>>, adapter: androidx.recyclerview.widget.ListAdapter<EventEntity, *>) {
         when (result) {
             is Result.Loading -> {
-                binding.tvNoEvent.visibility = View.GONE
-                binding.progressBar.visibility = View.VISIBLE
-                binding.progressBar2.visibility = View.VISIBLE
+                binding?.apply {
+                    tvNoEvent.visibility = View.GONE
+                    progressBar.visibility = View.VISIBLE
+                    progressBar2.visibility = View.VISIBLE
+                }
+
             }
             is Result.Success -> {
                 val eventData = result.data.take(5)
-                binding.tvNoEvent.visibility = if (result.data.isEmpty()) View.VISIBLE else View.GONE
-                binding.progressBar.visibility = View.GONE
-                adapter.submitList(eventData)
+                binding?.apply {
+                    tvNoEvent.visibility = if (result.data.isEmpty()) View.VISIBLE else View.GONE
+                    progressBar.visibility = View.GONE
+                }
+               adapter.submitList(eventData)
             }
             is Result.Error -> {
-                binding.progressBar.visibility = View.GONE
-                binding.tvNoEvent.visibility = View.GONE
+                binding?.apply {
+                    progressBar.visibility = View.GONE
+                    tvNoEvent.visibility = View.GONE
+                }
             }
         }
     }
@@ -107,27 +114,35 @@ class HomeFragment : BaseFragment() {
         homeViewModel.searchUpcomingEvents(query).observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.tvNoEvent.visibility = View.GONE
+                    binding?.apply {
+                        progressBar.visibility = View.VISIBLE
+                        tvNoEvent.visibility = View.GONE
+                    }
                 }
 
                 is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
+                    binding?.progressBar?.visibility = View.GONE
                     val eventData = result.data.take(5)
                     if (eventData.isEmpty()) {
-                        binding.tvNoEvent.visibility = View.VISIBLE
-                        binding.rvUpcoming.visibility = View.GONE
+                        binding?.apply {
+                            tvNoEvent.visibility = View.VISIBLE
+                            rvUpcoming.visibility = View.GONE
+                        }
                     } else {
-                        binding.tvNoEvent.visibility = View.GONE
-                        binding.rvUpcoming.visibility = View.VISIBLE
+                        binding?.apply {
+                            tvNoEvent.visibility = View.GONE
+                            rvUpcoming.visibility = View.VISIBLE
+                        }
                         eventHorizontalAdapter.submitList(eventData)
                     }
                 }
 
                 is Result.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.rvUpcoming.visibility = View.GONE
-                    binding.tvNoEvent.visibility = View.VISIBLE
+                    binding?.apply {
+                        progressBar.visibility = View.GONE
+                        rvUpcoming.visibility = View.GONE
+                        tvNoEvent.visibility = View.VISIBLE
+                    }
                 }
             }
         }
@@ -137,27 +152,35 @@ class HomeFragment : BaseFragment() {
         homeViewModel.searchFinishedEvents(query).observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Loading -> {
-                    binding.progressBar2.visibility = View.VISIBLE
-                    binding.tvNoEvent2.visibility = View.GONE
+                    binding?.apply {
+                        progressBar2.visibility = View.VISIBLE
+                        tvNoEvent2.visibility = View.GONE
+                    }
                 }
 
                 is Result.Success -> {
-                    binding.progressBar2.visibility = View.GONE
+                    binding?.progressBar2?.visibility = View.GONE
                     val eventData = result.data.take(5)
                     if (eventData.isEmpty()) {
-                        binding.tvNoEvent2.visibility = View.VISIBLE
-                        binding.rvEvent.visibility = View.GONE
+                        binding?.apply {
+                            tvNoEvent2.visibility = View.VISIBLE
+                            rvEvent.visibility = View.GONE
+                        }
                     } else {
-                        binding.tvNoEvent2.visibility = View.GONE
-                        binding.rvEvent.visibility = View.VISIBLE
+                        binding?.apply {
+                            tvNoEvent2.visibility = View.GONE
+                            rvEvent.visibility = View.VISIBLE
+                        }
                         eventVerticalAdapter.submitList(eventData)
                     }
                 }
 
                 is Result.Error -> {
-                    binding.progressBar2.visibility = View.GONE
-                    binding.rvEvent.visibility = View.GONE
-                    binding.tvNoEvent2.visibility = View.VISIBLE
+                    binding?.apply {
+                        progressBar2.visibility = View.GONE
+                        rvEvent.visibility = View.GONE
+                        tvNoEvent2.visibility = View.VISIBLE
+                    }
                 }
             }
         }

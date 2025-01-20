@@ -2,7 +2,6 @@
 
 package com.nadzirakarimantika.dicodingevent.ui
 
-import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -89,19 +88,21 @@ class DetailActivity : AppCompatActivity() {
 
     private fun populateEventDetails(event: EventEntity) {
         val remainingQuota = event.quota - event.registrants
-        binding.eventName.text = HtmlCompat.fromHtml(event.name, HtmlCompat.FROM_HTML_MODE_LEGACY)
-        binding.eventDescription.text = HtmlCompat.fromHtml(event.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
-        binding.eventCategory.text = HtmlCompat.fromHtml(event.category, HtmlCompat.FROM_HTML_MODE_LEGACY)
-        binding.eventOwner.text = HtmlCompat.fromHtml(getString(R.string.diselenggarakan_oleh, event.ownerName), HtmlCompat.FROM_HTML_MODE_LEGACY)
-        binding.eventCity.text = HtmlCompat.fromHtml(event.cityName, HtmlCompat.FROM_HTML_MODE_LEGACY)
-        binding.eventSummary.text = HtmlCompat.fromHtml(event.summary, HtmlCompat.FROM_HTML_MODE_LEGACY)
-        binding.eventQuota.text = HtmlCompat.fromHtml(getString(R.string.sisa_quota, remainingQuota.toString()), HtmlCompat.FROM_HTML_MODE_LEGACY)
-        binding.eventBeginTime.text = HtmlCompat.fromHtml(event.beginTime, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.apply {
+            eventName.text = HtmlCompat.fromHtml(event.name, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            eventDescription.text = HtmlCompat.fromHtml(event.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            eventCategory.text = HtmlCompat.fromHtml(event.category, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            eventOwner.text = HtmlCompat.fromHtml(getString(R.string.diselenggarakan_oleh, event.ownerName), HtmlCompat.FROM_HTML_MODE_LEGACY)
+            eventCity.text = HtmlCompat.fromHtml(event.cityName, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            eventSummary.text = HtmlCompat.fromHtml(event.summary, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            eventQuota.text = HtmlCompat.fromHtml(getString(R.string.sisa_quota, remainingQuota.toString()), HtmlCompat.FROM_HTML_MODE_LEGACY)
+            eventBeginTime.text = HtmlCompat.fromHtml(event.beginTime, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
-        binding.linkButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(event.link)
-            startActivity(intent)
+            linkButton.setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse(event.link)
+                startActivity(intent)
+            }
         }
 
         Glide.with(this)
@@ -135,7 +136,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun isConnectedToInternet(): Boolean {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork ?: return false
         val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
         return when {
